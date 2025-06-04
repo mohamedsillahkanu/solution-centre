@@ -327,28 +327,51 @@
         /* Product Gallery */
         .product-gallery {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             margin: 20px 0;
         }
 
         .product-image {
             width: 100%;
-            height: 150px;
-            background-color: #E3F2FD;
-            border-radius: 8px;
+            height: 200px;
+            background: linear-gradient(135deg, #E3F2FD 0%, #90CAF9 100%);
+            border-radius: 10px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 3em;
             color: #1E88E5;
             border: 2px solid #64B5F6;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
         .product-image:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(30, 136, 229, 0.3);
+            border-color: #1E88E5;
+        }
+
+        .product-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .product-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .product-description {
+            font-size: 0.9em;
+            text-align: center;
+            padding: 0 10px;
+            opacity: 0.8;
         }
 
         .product-label {
@@ -527,9 +550,8 @@
         <!-- Footer -->
         <div class="footer">
             <h4>Solution Center Sierra Leone</h4>
-            <p>Business owner: Lamin Sillah Kanu</p>
             <p>Your trusted directory for all services across Salone | © 2025</p>
-            <p>📧 info@solutioncenter.sl | 📞 +232-76-75329626</p>
+            <p>📧 info@solutioncenter.sl | 📞 +232-76-SOLUTION</p>
         </div>
     </div>
 
@@ -561,7 +583,7 @@
                 phone: "+232-76-123-456",
                 email: "info@saloneelite.sl",
                 rating: 4.8,
-                price_range: "$$",
+                price_range: "Mid-Range",
                 description: "Premium tailoring services for men and women. Custom suits, traditional wear, and geles for special occasions.",
                 services: ["Custom Suits", "Traditional Wear", "Gele Tying", "Wedding Outfits", "Kaba & Slits"]
             },
@@ -576,7 +598,7 @@
                 phone: "+232-88-765-432",
                 email: "bookings@kamaracars.sl",
                 rating: 4.5,
-                price_range: "$$$",
+                price_range: "Premium",
                 description: "Reliable car rental services with well-maintained vehicles. Airport transfers and city tours available.",
                 services: ["Economy Cars", "SUVs", "Lungi Airport Transfers", "City Tours", "Wedding Cars"]
             },
@@ -591,7 +613,7 @@
                 phone: "+232-76-456-789",
                 email: "aminata@beautypalace.sl",
                 rating: 4.9,
-                price_range: "$$",
+                price_range: "Mid-Range",
                 description: "Full-service beauty salon specializing in natural hair care, braiding, and traditional Sierra Leonean styles.",
                 services: ["Natural Hair Care", "Braiding", "Locs Maintenance", "Makeup", "Henna Designs"]
             },
@@ -606,7 +628,7 @@
                 phone: "+232-77-123-456",
                 email: "support@techfixsalone.sl",
                 rating: 4.6,
-                price_range: "$",
+                price_range: "Budget",
                 description: "Professional computer and mobile device repair services. Software installation and data recovery.",
                 services: ["Laptop Repair", "Phone Repair", "Data Recovery", "Software Installation", "CCTV Setup"]
             },
@@ -621,7 +643,7 @@
                 phone: "+232-76-987-654",
                 email: "orders@mamafatmata.sl",
                 rating: 4.7,
-                price_range: "$$",
+                price_range: "Mid-Range",
                 description: "Authentic Sierra Leonean cuisine for events and daily meals. Specializing in jollof rice, cassava leaves, and groundnut soup.",
                 services: ["Event Catering", "Daily Meals", "Traditional Dishes", "Wedding Catering", "Corporate Lunch"]
             },
@@ -636,61 +658,205 @@
                 phone: "+232-88-234-567",
                 email: "info@greenhills.sl",
                 rating: 4.4,
-                price_range: "$$$",
+                price_range: "Premium",
                 description: "Professional landscaping and garden maintenance services for residential and commercial properties.",
                 services: ["Garden Design", "Lawn Maintenance", "Tree Planting", "Irrigation Systems", "Compound Cleaning"]
             }
         ];
 
-        // Product samples by category
+        // Product samples by category with detailed work samples
         const productSamples = {
             "Fashion & Clothing": [
-                {icon: "👔", name: "Custom Suits"},
-                {icon: "👗", name: "Traditional Wear"},
-                {icon: "👒", name: "Accessories"},
-                {icon: "🧵", name: "Alterations"},
-                {icon: "👜", name: "Bags & Purses"},
-                {icon: "👠", name: "Shoes & Footwear"}
+                {
+                    icon: "👔", 
+                    title: "Custom Business Suits", 
+                    description: "Tailored suits for professionals, weddings, and special occasions",
+                    samples: ["Three-piece charcoal suit with silk lining", "Navy blue wedding suit with gold accents", "Classic black tuxedo with bow tie", "Slim-fit gray suit for young professionals", "Traditional kente-inspired formal wear"]
+                },
+                {
+                    icon: "👗", 
+                    title: "Traditional Sierra Leonean Wear", 
+                    description: "Authentic cultural clothing and modern interpretations",
+                    samples: ["Elegant kaba and slit with intricate embroidery", "Modern dashiki dress with contemporary cut", "Traditional gele headwrap styling", "Ceremonial bubu with gold threading", "Fusion outfit combining traditional and modern elements"]
+                },
+                {
+                    icon: "✂️", 
+                    title: "Expert Alterations", 
+                    description: "Professional fitting and modification services",
+                    samples: ["Wedding dress hemming and fitting", "Suit jacket shoulder adjustments", "Trouser waist and length modifications", "Dress size adjustments and reshaping", "Vintage clothing restoration and updates"]
+                },
+                {
+                    icon: "👜", 
+                    title: "Handbags & Accessories", 
+                    description: "Custom leather goods and fashion accessories",
+                    samples: ["Handcrafted leather handbags with local patterns", "Custom beaded jewelry sets", "Traditional headties and scarves", "Leather belts with brass buckles", "Evening clutches with Sierra Leone motifs"]
+                },
+                {
+                    icon: "🧵", 
+                    title: "Embroidery & Decoration", 
+                    description: "Detailed embellishment and decorative work",
+                    samples: ["Hand-embroidered traditional motifs", "Beadwork on ceremonial garments", "Gold thread detailing on formal wear", "Custom monogramming and personalization", "Sequin and crystal applications"]
+                }
             ],
             "Transportation": [
-                {icon: "🚗", name: "Economy Cars"},
-                {icon: "🚙", name: "SUVs"},
-                {icon: "🏍️", name: "Motorcycles"},
-                {icon: "🚐", name: "Vans"},
-                {icon: "🛻", name: "Pickup Trucks"},
-                {icon: "🚕", name: "Luxury Cars"}
+                {
+                    icon: "🚗", 
+                    title: "Economy Car Rentals", 
+                    description: "Affordable and reliable vehicles for daily use",
+                    samples: ["2020 Toyota Corolla - fuel efficient city car", "Honda Civic - perfect for small families", "Nissan Sentra - comfortable long distance travel", "Hyundai Elantra - modern features and safety", "Suzuki Swift - compact and easy to park"]
+                },
+                {
+                    icon: "🚙", 
+                    title: "SUVs & 4WD Vehicles", 
+                    description: "Robust vehicles for challenging terrain",
+                    samples: ["Toyota Prado - premium off-road capability", "Honda Pilot - spacious family SUV", "Nissan Pathfinder - adventure-ready vehicle", "Ford Explorer - powerful engine and comfort", "Mitsubishi Pajero - reliable for rural areas"]
+                },
+                {
+                    icon: "✈️", 
+                    title: "Lungi Airport Transfers", 
+                    description: "Safe and reliable airport transportation service",
+                    samples: ["Direct ferry + vehicle service to Freetown", "VIP airport pickup with meet & greet", "Group transfer service for families", "Late night/early morning transfers available", "Luggage assistance and professional drivers"]
+                },
+                {
+                    icon: "🎉", 
+                    title: "Wedding & Event Cars", 
+                    description: "Special occasion vehicle rentals",
+                    samples: ["Decorated luxury sedans for bride and groom", "Classic vintage cars for traditional ceremonies", "Stretched limousines for grand entrances", "Convoy vehicles for wedding party", "Ceremonial cars with traditional decorations"]
+                },
+                {
+                    icon: "🚐", 
+                    title: "Group Transportation", 
+                    description: "Large capacity vehicles for groups",
+                    samples: ["15-seater minibus for family events", "25-seater bus for corporate outings", "Tourist bus with air conditioning", "School trip transportation", "Conference delegate transportation"]
+                }
             ],
             "Beauty & Wellness": [
-                {icon: "💇", name: "Hair Styling"},
-                {icon: "💅", name: "Nail Care"},
-                {icon: "💄", name: "Makeup"},
-                {icon: "🧴", name: "Hair Products"},
-                {icon: "🌿", name: "Natural Treatments"},
-                {icon: "✨", name: "Spa Services"}
+                {
+                    icon: "💇", 
+                    title: "Natural Hair Styling", 
+                    description: "Specialized care for African hair textures",
+                    samples: ["Protective braiding styles for hair growth", "Natural hair wash and deep conditioning", "Twist outs and bantu knot styles", "Hair trimming and shape-ups", "Scalp treatments with natural oils"]
+                },
+                {
+                    icon: "👑", 
+                    title: "Braiding & Locs", 
+                    description: "Traditional and modern braiding techniques",
+                    samples: ["Intricate cornrow patterns and designs", "Box braids in various lengths and sizes", "Senegalese twists and rope braids", "Dreadlock maintenance and styling", "Goddess braids with accessories"]
+                },
+                {
+                    icon: "💄", 
+                    title: "Makeup & Beauty", 
+                    description: "Professional makeup for all occasions",
+                    samples: ["Bridal makeup with traditional elements", "Natural everyday makeup looks", "Special event glamour makeup", "Makeup lessons and tutorials", "Henna art and temporary tattoos"]
+                },
+                {
+                    icon: "✨", 
+                    title: "Spa & Wellness", 
+                    description: "Relaxation and rejuvenation services",
+                    samples: ["Full body massage with local oils", "Facial treatments using natural ingredients", "Manicure and pedicure services", "Aromatherapy and relaxation sessions", "Traditional healing and wellness treatments"]
+                },
+                {
+                    icon: "🌿", 
+                    title: "Natural Beauty Products", 
+                    description: "Locally sourced beauty and skincare items",
+                    samples: ["Shea butter products from local sources", "Black soap with traditional ingredients", "Natural hair oils and treatments", "Herbal skincare remedies", "Organic beauty product consultations"]
+                }
             ],
             "Technology": [
-                {icon: "💻", name: "Laptops"},
-                {icon: "📱", name: "Mobile Phones"},
-                {icon: "🖥️", name: "Desktop PCs"},
-                {icon: "📷", name: "Cameras"},
-                {icon: "🎮", name: "Gaming"},
-                {icon: "⌚", name: "Smart Watches"}
+                {
+                    icon: "💻", 
+                    title: "Laptop Repair Services", 
+                    description: "Professional computer diagnostics and repair",
+                    samples: ["Screen replacement for all laptop brands", "Keyboard and touchpad repairs", "Hard drive recovery and replacement", "Virus removal and system optimization", "Hardware upgrades and memory installation"]
+                },
+                {
+                    icon: "📱", 
+                    title: "Mobile Phone Repairs", 
+                    description: "Quick and reliable smartphone services",
+                    samples: ["Cracked screen replacement (iPhone, Samsung, etc.)", "Battery replacement and charging issues", "Water damage restoration services", "Software troubleshooting and updates", "Phone unlocking and network issues"]
+                },
+                {
+                    icon: "📷", 
+                    title: "CCTV & Security Systems", 
+                    description: "Complete security installation and maintenance",
+                    samples: ["4-camera security system installation", "Night vision cameras for 24/7 monitoring", "Remote viewing setup for smartphones", "Alarm system integration", "Business security consultations"]
+                },
+                {
+                    icon: "💾", 
+                    title: "Data Recovery Services", 
+                    description: "Retrieve lost or corrupted important files",
+                    samples: ["Hard drive data recovery", "Deleted file restoration", "Corrupted document repair", "Photo and video recovery", "Business data backup solutions"]
+                },
+                {
+                    icon: "🖥️", 
+                    title: "Computer Setup & Training", 
+                    description: "New system setup and user education",
+                    samples: ["New computer setup and software installation", "Microsoft Office training sessions", "Internet and email setup tutorials", "Basic computer skills for beginners", "Business software consultations"]
+                }
             ],
             "Food & Catering": [
-                {icon: "🍛", name: "Jollof Rice"},
-                {icon: "🥘", name: "Traditional Dishes"},
-                {icon: "🎂", name: "Cakes & Desserts"},
-                {icon: "🥤", name: "Beverages"},
-                {icon: "🍖", name: "Grilled Meats"},
-                {icon: "🥗", name: "Salads & Sides"}
+                {
+                    icon: "🍛", 
+                    title: "Traditional Sierra Leonean Cuisine", 
+                    description: "Authentic local dishes prepared with love",
+                    samples: ["Jollof rice with perfectly seasoned chicken", "Cassava leaves with smoked fish and meat", "Groundnut soup with fresh vegetables", "Fried plantains with spicy pepper sauce", "Palm oil rice with dried fish"]
+                },
+                {
+                    icon: "🎂", 
+                    title: "Wedding & Event Catering", 
+                    description: "Complete catering for special occasions",
+                    samples: ["3-tier wedding cake with traditional decorations", "Buffet setup for 200+ guests", "Cocktail reception with local and international dishes", "Traditional naming ceremony catering", "Corporate lunch packages"]
+                },
+                {
+                    icon: "🥘", 
+                    title: "Daily Meal Services", 
+                    description: "Fresh, healthy meals for everyday dining",
+                    samples: ["Weekly meal prep with balanced nutrition", "Office lunch delivery service", "Home-cooked meals for busy families", "Special diet accommodations", "Fresh fruit and vegetable arrangements"]
+                },
+                {
+                    icon: "🍖", 
+                    title: "Grilled & Barbecue Specialties", 
+                    description: "Expert grilling for meat lovers",
+                    samples: ["Perfectly grilled chicken with local spices", "BBQ beef with traditional marinades", "Grilled fish with pepper sauce", "Suya-style meat skewers", "Mixed grill platters for parties"]
+                },
+                {
+                    icon: "🥤", 
+                    title: "Beverages & Refreshments", 
+                    description: "Traditional and modern drink options",
+                    samples: ["Fresh ginger beer and natural juices", "Traditional palm wine service", "Imported and local soft drinks", "Coffee and tea service for events", "Custom cocktail and mocktail creation"]
+                }
             ],
             "Home & Garden": [
-                {icon: "🌺", name: "Flower Gardens"},
-                {icon: "🌳", name: "Trees & Plants"},
-                {icon: "🏡", name: "Landscaping"},
-                {icon: "🚿", name: "Plumbing"},
-                {icon: "💡", name: "Electrical"},
-                {icon: "🔨", name: "Carpentry"}
+                {
+                    icon: "🌺", 
+                    title: "Garden Design & Landscaping", 
+                    description: "Beautiful outdoor spaces for your property",
+                    samples: ["Tropical flower garden with native plants", "Vegetable garden setup with raised beds", "Decorative stone pathways and borders", "Outdoor lighting and water features", "Compound beautification projects"]
+                },
+                {
+                    icon: "🌳", 
+                    title: "Tree Planting & Maintenance", 
+                    description: "Professional tree care and landscaping",
+                    samples: ["Fruit tree planting (mango, orange, coconut)", "Shade tree installation for compounds", "Tree pruning and health maintenance", "Palm tree care and trimming", "Hedge trimming and topiary work"]
+                },
+                {
+                    icon: "💡", 
+                    title: "Electrical Services", 
+                    description: "Safe and reliable electrical installations",
+                    samples: ["House wiring and electrical panel installation", "Solar power system setup", "Ceiling fan and light fixture installation", "Outdoor security lighting", "Electrical troubleshooting and repairs"]
+                },
+                {
+                    icon: "🚿", 
+                    title: "Plumbing Services", 
+                    description: "Complete water system solutions",
+                    samples: ["Bathroom renovation and fixture installation", "Water tank and pump installation", "Pipe repair and replacement", "Drainage system maintenance", "Kitchen sink and appliance connections"]
+                },
+                {
+                    icon: "🏠", 
+                    title: "Home Improvement", 
+                    description: "Complete renovation and upgrade services",
+                    samples: ["Interior painting with quality finishes", "Tile installation for floors and walls", "Window and door installations", "Roof repair and maintenance", "Compound wall construction and gates"]
+                }
             ]
         };
 
@@ -747,18 +913,21 @@
                 const stars = '⭐'.repeat(Math.floor(service.rating));
                 return `
                     <div class="service-card" onclick="openModal(${services.indexOf(service)})">
-                        <div class="click-indicator">👁️</div>
-                        <div class="service-name">${service.name}</div>
-                        <div class="service-category">${service.category} - ${service.subcategory}</div>
-                        <div class="service-location">📍 ${service.area}, ${service.city}, ${service.district}</div>
-                        <div class="service-rating">${stars} ${service.rating}/5.0 | ${service.price_range}</div>
-                        <div class="service-description">${service.description}</div>
-                        <div class="service-services"><strong>Services:</strong> ${service.services.join(', ')}</div>
-                        <div class="service-gender"><strong>Gender Served:</strong> ${service.gender_served}</div>
-                        <div class="service-contact">
-                            <strong>Contact:</strong><br>
-                            📞 ${service.phone}<br>
-                            📧 ${service.email}
+                        <div class="service-image"></div>
+                        <div class="service-content">
+                            <div>
+                                <div class="service-name">${service.name}</div>
+                                <div class="service-category">${service.category} - ${service.subcategory}</div>
+                                <div class="service-location">📍 ${service.area}, ${service.city}, ${service.district}</div>
+                                <div class="service-rating">${stars} ${service.rating}/5.0 | ${service.price_range}</div>
+                                <div class="service-description">${service.description}</div>
+                                <div class="service-services"><strong>Services:</strong> ${service.services.join(', ')}</div>
+                                <div class="service-gender"><strong>Gender Served:</strong> ${service.gender_served}</div>
+                            </div>
+                            <div class="service-contact">
+                                <strong>Contact:</strong><br>
+                                📞 ${service.phone} | 📧 ${service.email}
+                            </div>
                         </div>
                     </div>
                 `;
@@ -807,12 +976,11 @@
             modalServiceCategory.textContent = `${service.category} - ${service.subcategory}`;
             
             const products = productSamples[service.category] || [
-                {icon: "📦", name: "Product 1"},
-                {icon: "📦", name: "Product 2"},
-                {icon: "📦", name: "Product 3"},
-                {icon: "📦", name: "Product 4"},
-                {icon: "📦", name: "Product 5"},
-                {icon: "📦", name: "Product 6"}
+                {icon: "📦", title: "Service 1", description: "Professional service offering", samples: ["Sample work 1", "Sample work 2", "Sample work 3", "Sample work 4", "Sample work 5"]},
+                {icon: "📦", title: "Service 2", description: "Quality service provision", samples: ["Sample work 1", "Sample work 2", "Sample work 3", "Sample work 4", "Sample work 5"]},
+                {icon: "📦", title: "Service 3", description: "Expert service delivery", samples: ["Sample work 1", "Sample work 2", "Sample work 3", "Sample work 4", "Sample work 5"]},
+                {icon: "📦", title: "Service 4", description: "Premium service offering", samples: ["Sample work 1", "Sample work 2", "Sample work 3", "Sample work 4", "Sample work 5"]},
+                {icon: "📦", title: "Service 5", description: "Specialized service provision", samples: ["Sample work 1", "Sample work 2", "Sample work 3", "Sample work 4", "Sample work 5"]}
             ];
             
             const stars = '⭐'.repeat(Math.floor(service.rating));
@@ -838,12 +1006,13 @@
                     <p><strong>Available Services:</strong> ${service.services.join(', ')}</p>
                 </div>
                 
-                <h3 style="color: #0D47A1; margin-bottom: 15px;">📸 Sample Products/Services</h3>
+                <h3 style="color: #0D47A1; margin-bottom: 15px;">📸 Our Work Portfolio & Sample Services</h3>
                 <div class="product-gallery">
-                    ${products.map(product => `
-                        <div>
-                            <div class="product-image">${product.icon}</div>
-                            <div class="product-label">${product.name}</div>
+                    ${products.map((product, index) => `
+                        <div class="product-image" onclick="showWorkSamples('${service.name}', '${product.title}', ${JSON.stringify(product.samples).replace(/"/g, '&quot;')})">
+                            <div class="product-icon">${product.icon}</div>
+                            <div class="product-title">${product.title}</div>
+                            <div class="product-description">${product.description}</div>
                         </div>
                     `).join('')}
                 </div>
@@ -857,6 +1026,70 @@
             `;
             
             modal.style.display = 'flex';
+        }
+
+        // Show work samples
+        function showWorkSamples(serviceName, productTitle, samples) {
+            const samplesArray = JSON.parse(samples.replace(/&quot;/g, '"'));
+            const modal = document.getElementById('serviceModal');
+            const modalServiceName = document.getElementById('modalServiceName');
+            const modalServiceCategory = document.getElementById('modalServiceCategory');
+            const modalServiceDetails = document.getElementById('modalServiceDetails');
+            
+            modalServiceName.textContent = serviceName;
+            modalServiceCategory.textContent = `${productTitle} - Work Samples`;
+            
+            modalServiceDetails.innerHTML = `
+                <h3 style="color: #0D47A1; margin-bottom: 20px;">📸 ${productTitle} - Our Previous Work</h3>
+                <div style="background-color: #E3F2FD; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <p style="font-style: italic; color: #0D47A1; margin-bottom: 15px;">Here are 5 examples of our recent work in ${productTitle.toLowerCase()}:</p>
+                    <div style="display: grid; gap: 15px;">
+                        ${samplesArray.map((sample, index) => `
+                            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #1E88E5; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                    <div style="background: #1E88E5; color: white; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; font-weight: bold; margin-right: 10px;">
+                                        ${index + 1}
+                                    </div>
+                                    <strong style="color: #0D47A1;">Sample Work ${index + 1}</strong>
+                                </div>
+                                <p style="color: #0D47A1; margin: 0; line-height: 1.4;">${sample}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="sample-images-container">
+                    <h4 style="color: #0D47A1; margin-bottom: 10px;">📷 Sample Work Images</h4>
+                    <p style="color: #0D47A1; margin-bottom: 15px; font-style: italic;">Click on any placeholder to view actual work photos (Coming soon)</p>
+                    <div class="sample-images-grid">
+                        ${Array.from({length: 5}, (_, index) => `
+                            <div class="sample-image-placeholder" onclick="alert('Image ${index + 1} - Full photo viewer coming soon!')">
+                                <div class="sample-image-icon">🖼️</div>
+                                <div class="sample-image-text">Sample ${index + 1}<br>Photo</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div style="background-color: #90CAF9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <h4 style="color: #0D47A1; margin-bottom: 10px;">📞 Contact us for similar work:</h4>
+                    <p style="color: #0D47A1; margin: 0;">Call or message us to discuss your ${productTitle.toLowerCase()} needs. We provide free consultations and quotes for all projects.</p>
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <button onclick="closeModal()" 
+                            style="background-color: #1E88E5; color: white; padding: 12px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-right: 10px;">
+                        Close
+                    </button>
+                    <button onclick="history.back()" 
+                            style="background-color: #64B5F6; color: white; padding: 12px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                        ← Back to Services
+                    </button>
+                </div>
+            `;
+            
+            // Scroll to top of modal
+            document.querySelector('.modal-content').scrollTop = 0;
         }
 
         // Close modal

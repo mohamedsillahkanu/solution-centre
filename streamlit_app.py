@@ -11,16 +11,16 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Define color theme - blue and white palette
+# Define color theme - bright blue and white palette
 COLORS = {
-    "primary": "#1E3A8A",       # Deep blue
-    "secondary": "#3B82F6",     # Medium blue
-    "background": "#EFF6FF",    # Very light blue
-    "light_bg": "#DBEAFE",      # Light blue
-    "text": "#1E40AF",          # Blue text
-    "accent": "#60A5FA",        # Light accent blue
+    "primary": "#0080FF",       # Bright blue
+    "secondary": "#00BFFF",     # Deep sky blue
+    "background": "#F0F8FF",    # Alice blue (very light)
+    "light_bg": "#E6F3FF",      # Light blue
+    "text": "#0066CC",          # Medium blue text
+    "accent": "#40A9FF",        # Light bright blue
     "white": "#FFFFFF",
-    "light_gray": "#F1F5F9"
+    "light_gray": "#F8FCFF"
 }
 
 # Sample data for services (in real app, this would come from a database)
@@ -333,7 +333,189 @@ def get_greeting():
     else:
         return "Good Evening"
 
-def display_service_card(service):
+# Initialize session state for modal
+if 'selected_service' not in st.session_state:
+    st.session_state.selected_service = None
+if 'show_modal' not in st.session_state:
+    st.session_state.show_modal = False
+
+def get_sample_products(service_category):
+    """Get sample product images based on service category"""
+    product_samples = {
+        "Fashion & Clothing": [
+            {"icon": "👔", "name": "Custom Suits"},
+            {"icon": "👗", "name": "Traditional Wear"},
+            {"icon": "👒", "name": "Accessories"},
+            {"icon": "🧵", "name": "Alterations"},
+            {"icon": "👜", "name": "Bags & Purses"},
+            {"icon": "👠", "name": "Shoes & Footwear"}
+        ],
+        "Transportation": [
+            {"icon": "🚗", "name": "Economy Cars"},
+            {"icon": "🚙", "name": "SUVs"},
+            {"icon": "🏍️", "name": "Motorcycles"},
+            {"icon": "🚐", "name": "Vans"},
+            {"icon": "🛻", "name": "Pickup Trucks"},
+            {"icon": "🚕", "name": "Luxury Cars"}
+        ],
+        "Beauty & Wellness": [
+            {"icon": "💇", "name": "Hair Styling"},
+            {"icon": "💅", "name": "Nail Care"},
+            {"icon": "💄", "name": "Makeup"},
+            {"icon": "🧴", "name": "Hair Products"},
+            {"icon": "🌿", "name": "Natural Treatments"},
+            {"icon": "✨", "name": "Spa Services"}
+        ],
+        "Technology": [
+            {"icon": "💻", "name": "Laptops"},
+            {"icon": "📱", "name": "Mobile Phones"},
+            {"icon": "🖥️", "name": "Desktop PCs"},
+            {"icon": "📷", "name": "Cameras"},
+            {"icon": "🎮", "name": "Gaming"},
+            {"icon": "⌚", "name": "Smart Watches"}
+        ],
+        "Food & Catering": [
+            {"icon": "🍛", "name": "Jollof Rice"},
+            {"icon": "🥘", "name": "Traditional Dishes"},
+            {"icon": "🎂", "name": "Cakes & Desserts"},
+            {"icon": "🥤", "name": "Beverages"},
+            {"icon": "🍖", "name": "Grilled Meats"},
+            {"icon": "🥗", "name": "Salads & Sides"}
+        ],
+        "Home & Garden": [
+            {"icon": "🌺", "name": "Flower Gardens"},
+            {"icon": "🌳", "name": "Trees & Plants"},
+            {"icon": "🏡", "name": "Landscaping"},
+            {"icon": "🚿", "name": "Plumbing"},
+            {"icon": "💡", "name": "Electrical"},
+            {"icon": "🔨", "name": "Carpentry"}
+        ],
+        "Professional Services": [
+            {"icon": "⚖️", "name": "Legal Documents"},
+            {"icon": "📊", "name": "Accounting"},
+            {"icon": "📈", "name": "Consulting"},
+            {"icon": "🏠", "name": "Real Estate"},
+            {"icon": "📝", "name": "Business Plans"},
+            {"icon": "💼", "name": "Corporate Services"}
+        ],
+        "Education": [
+            {"icon": "📚", "name": "Books & Materials"},
+            {"icon": "💻", "name": "Computer Training"},
+            {"icon": "🌍", "name": "Language Classes"},
+            {"icon": "🎓", "name": "Certificates"},
+            {"icon": "✏️", "name": "Tutoring"},
+            {"icon": "🔬", "name": "Science Labs"}
+        ],
+        "Health & Medical": [
+            {"icon": "🩺", "name": "Medical Checkups"},
+            {"icon": "💊", "name": "Medications"},
+            {"icon": "🧪", "name": "Lab Tests"},
+            {"icon": "🦷", "name": "Dental Care"},
+            {"icon": "👁️", "name": "Eye Care"},
+            {"icon": "🚑", "name": "Emergency Services"}
+        ],
+        "Entertainment": [
+            {"icon": "🎵", "name": "Music Events"},
+            {"icon": "📸", "name": "Photography"},
+            {"icon": "🎥", "name": "Videography"},
+            {"icon": "🎤", "name": "DJ Services"},
+            {"icon": "🎊", "name": "Event Planning"},
+            {"icon": "🎭", "name": "Entertainment"}
+        ],
+        "Agriculture": [
+            {"icon": "🌾", "name": "Crop Farming"},
+            {"icon": "🐄", "name": "Livestock"},
+            {"icon": "🐟", "name": "Fish Farming"},
+            {"icon": "🚜", "name": "Farm Equipment"},
+            {"icon": "🌱", "name": "Seeds & Plants"},
+            {"icon": "💧", "name": "Irrigation"}
+        ],
+        "Construction": [
+            {"icon": "🏗️", "name": "Building Construction"},
+            {"icon": "🛤️", "name": "Road Construction"},
+            {"icon": "🎨", "name": "Painting"},
+            {"icon": "🧱", "name": "Masonry"},
+            {"icon": "🔧", "name": "Roofing"},
+            {"icon": "⚡", "name": "Electrical Work"}
+        ]
+    }
+    
+    # Return default if category not found
+    return product_samples.get(service_category, [
+        {"icon": "📦", "name": "Product 1"},
+        {"icon": "📦", "name": "Product 2"},
+        {"icon": "📦", "name": "Product 3"},
+        {"icon": "📦", "name": "Product 4"},
+        {"icon": "📦", "name": "Product 5"},
+        {"icon": "📦", "name": "Product 6"}
+    ])
+
+def display_service_modal(service):
+    """Display service details in a modal with product gallery"""
+    if not st.session_state.show_modal or not service:
+        return
+    
+    # Get sample products for this service category
+    products = get_sample_products(service["category"])
+    
+    modal_html = f"""
+    <div class="service-modal" onclick="this.style.display='none'">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <button class="close-button" onclick="this.parentElement.parentElement.parentElement.style.display='none'">×</button>
+                <h2>{service["name"]}</h2>
+                <p>{service["category"]} - {service["subcategory"]}</p>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <h3 style="color: {COLORS['primary']}; margin-bottom: 15px;">📍 Location & Contact</h3>
+                <div style="background: {COLORS['light_bg']}; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <p><strong>Address:</strong> {service["area"]}, {service["city"]}, {service["district"]}</p>
+                    <p><strong>Phone:</strong> {service["phone"]}</p>
+                    <p><strong>Email:</strong> {service["email"]}</p>
+                    <p><strong>Rating:</strong> {'⭐' * int(service["rating"])} {service["rating"]}/5.0</p>
+                    <p><strong>Price Range:</strong> {service["price_range"]}</p>
+                    <p><strong>Gender Served:</strong> {service["gender_served"]}</p>
+                </div>
+                
+                <h3 style="color: {COLORS['primary']}; margin-bottom: 15px;">📝 About This Service</h3>
+                <div style="background: {COLORS['background']}; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <p>{service["description"]}</p>
+                </div>
+                
+                <h3 style="color: {COLORS['primary']}; margin-bottom: 15px;">🛍️ Services & Products</h3>
+                <div style="margin-bottom: 20px;">
+                    <p><strong>Available Services:</strong> {", ".join(service["services"])}</p>
+                </div>
+                
+                <h3 style="color: {COLORS['primary']}; margin-bottom: 15px;">📸 Sample Products/Services</h3>
+                <div class="product-gallery">
+    """
+    
+    # Add product images
+    for product in products:
+        modal_html += f"""
+                    <div>
+                        <div class="product-image">{product["icon"]}</div>
+                        <div class="product-label">{product["name"]}</div>
+                    </div>
+        """
+    
+    modal_html += f"""
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <button onclick="this.parentElement.parentElement.parentElement.parentElement.style.display='none'" 
+                            style="background: {COLORS['primary']}; color: white; padding: 12px 30px; border: none; border-radius: 25px; font-size: 1.1em; font-weight: bold; cursor: pointer;">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    """
+    
+    st.markdown(modal_html, unsafe_allow_html=True)
     """Display a service in a card format with fixed dimensions"""
     rating_stars = "⭐" * int(service["rating"])
     

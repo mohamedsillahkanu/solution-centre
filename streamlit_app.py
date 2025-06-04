@@ -11,16 +11,14 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Define color theme - bright blue and white palette
+# Define color theme - pure blue and white palette
 COLORS = {
-    "primary": "#0080FF",       # Bright blue
-    "secondary": "#00BFFF",     # Deep sky blue
-    "background": "#F0F8FF",    # Alice blue (very light)
-    "light_bg": "#E6F3FF",      # Light blue
-    "text": "#0066CC",          # Medium blue text
-    "accent": "#40A9FF",        # Light bright blue
-    "white": "#FFFFFF",
-    "light_gray": "#F8FCFF"
+    "primary": "#1E88E5",       # Primary blue
+    "secondary": "#90CAF9",     # Light blue
+    "background": "#E3F2FD",    # Very light blue background
+    "text": "#0D47A1",          # Dark blue text
+    "accent": "#64B5F6",        # Accent blue
+    "white": "#FFFFFF"
 }
 
 # Sample data for services (in real app, this would come from a database)
@@ -468,8 +466,8 @@ def display_service_modal(service):
             </div>
             
             <div style="margin: 20px 0;">
-                <h3 style="color: {COLORS['primary']}; margin-bottom: 15px;">📍 Location & Contact</h3>
-                <div style="background: {COLORS['light_bg']}; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="color: {COLORS['text']}; margin-bottom: 15px;">📍 Location & Contact</h3>
+                <div style="background-color: {COLORS['background']}; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
                     <p><strong>Address:</strong> {service["area"]}, {service["city"]}, {service["district"]}</p>
                     <p><strong>Phone:</strong> {service["phone"]}</p>
                     <p><strong>Email:</strong> {service["email"]}</p>
@@ -478,12 +476,17 @@ def display_service_modal(service):
                     <p><strong>Gender Served:</strong> {service["gender_served"]}</p>
                 </div>
                 
-                <h3 style="color: {COLORS['primary']}; margin-bottom: 15px;">📝 About This Service</h3>
-                <div style="background: {COLORS['background']}; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                <h3 style="color: {COLORS['text']}; margin-bottom: 15px;">📝 About This Service</h3>
+                <div style="background-color: {COLORS['secondary']}; color: {COLORS['text']}; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
                     <p>{service["description"]}</p>
                 </div>
                 
-                <h3 style="color: {COLORS['primary']}; margin-bottom: 15px;">🛍️ Services & Products</h3>
+                <h3 style="color: {COLORS['text']}; margin-bottom: 15px;">🛍️ Services & Products</h3>
+                <div style="margin-bottom: 20px;">
+                    <p><strong>Available Services:</strong> {", ".join(service["services"])}</p>
+                </div>
+                
+                <h3 style="color: {COLORS['text']}; margin-bottom: 15px;">📸 Sample Products/Services</h3>15px;">🛍️ Services & Products</h3>
                 <div style="margin-bottom: 20px;">
                     <p><strong>Available Services:</strong> {", ".join(service["services"])}</p>
                 </div>
@@ -739,6 +742,16 @@ def main():
             if i + 1 < len(filtered_services):
                 with col2:
                     display_service_card(filtered_services[i + 1])
+    
+    # Display modal if a service is selected
+    if st.session_state.show_modal and st.session_state.selected_service:
+        display_service_modal(st.session_state.selected_service)
+        
+        # Add a close button in the sidebar or main area
+        if st.button("❌ Close Details", type="secondary"):
+            st.session_state.show_modal = False
+            st.session_state.selected_service = None
+            st.rerun()
     else:
         # No results found
         no_results_html = f"""

@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
-import json
 
 # Set page configuration
 st.set_page_config(
@@ -21,7 +20,13 @@ COLORS = {
     "white": "#FFFFFF"
 }
 
-# Sample data for services (in real app, this would come from a database)
+# Initialize session state
+if 'selected_service' not in st.session_state:
+    st.session_state.selected_service = None
+if 'show_modal' not in st.session_state:
+    st.session_state.show_modal = False
+
+# Sample data for services
 SAMPLE_SERVICES = [
     {
         "name": "Salone Elite Tailoring",
@@ -56,7 +61,7 @@ SAMPLE_SERVICES = [
         "services": ["Economy Cars", "SUVs", "Lungi Airport Transfers", "City Tours", "Wedding Cars"]
     },
     {
-        "name": "Aminata's Beauty Palace",
+        "name": "Aminata Beauty Palace",
         "category": "Beauty & Wellness",
         "subcategory": "Hair Salon",
         "city": "Bo",
@@ -88,7 +93,7 @@ SAMPLE_SERVICES = [
         "services": ["Laptop Repair", "Phone Repair", "Data Recovery", "Software Installation", "CCTV Setup"]
     },
     {
-        "name": "Mama Fatmata's Kitchen",
+        "name": "Mama Fatmata Kitchen",
         "category": "Food & Catering",
         "subcategory": "Catering",
         "city": "Kenema",
@@ -118,111 +123,35 @@ SAMPLE_SERVICES = [
         "price_range": "$$$",
         "description": "Professional landscaping and garden maintenance services for residential and commercial properties.",
         "services": ["Garden Design", "Lawn Maintenance", "Tree Planting", "Irrigation Systems", "Compound Cleaning"]
-    },
-    {
-        "name": "Salone Express Logistics",
-        "category": "Transportation",
-        "subcategory": "Logistics",
-        "city": "Makeni",
-        "area": "Makeni Town",
-        "district": "Bombali District",
-        "country": "Sierra Leone",
-        "gender_served": "All",
-        "phone": "+232-76-345-678",
-        "email": "info@saloneexpress.sl",
-        "rating": 4.3,
-        "price_range": "$$",
-        "description": "Reliable logistics and delivery services across Sierra Leone. Same-day delivery in major cities.",
-        "services": ["Package Delivery", "Moving Services", "Cargo Transport", "Same-Day Delivery", "Interstate Transport"]
-    },
-    {
-        "name": "Dr. Bangura Medical Clinic",
-        "category": "Health & Medical",
-        "subcategory": "Clinics",
-        "city": "Freetown",
-        "area": "Kissy Street",
-        "district": "Western Area Urban",
-        "country": "Sierra Leone",
-        "gender_served": "All",
-        "phone": "+232-22-123-456",
-        "email": "clinic@drbangura.sl",
-        "rating": 4.6,
-        "price_range": "$$",
-        "description": "Full-service medical clinic providing quality healthcare services. General practice and specialist consultations.",
-        "services": ["General Consultation", "Laboratory Tests", "Vaccination", "Health Checkups", "Emergency Care"]
-    },
-    {
-        "name": "Salone Skills Academy",
-        "category": "Education",
-        "subcategory": "Training Centers",
-        "city": "Freetown",
-        "area": "Fourah Bay",
-        "district": "Western Area Urban",
-        "country": "Sierra Leone",
-        "gender_served": "All",
-        "phone": "+232-76-789-012",
-        "email": "info@saloneskills.sl",
-        "rating": 4.5,
-        "price_range": "$",
-        "description": "Professional training center offering skills development in technology, business, and vocational trades.",
-        "services": ["Computer Training", "Business Skills", "Vocational Training", "English Classes", "Digital Literacy"]
-    },
-    {
-        "name": "Njala Agricultural Services",
-        "category": "Professional Services",
-        "subcategory": "Agricultural Consulting",
-        "city": "Njala",
-        "area": "Njala University Area",
-        "district": "Moyamba District",
-        "country": "Sierra Leone",
-        "gender_served": "All",
-        "phone": "+232-77-456-789",
-        "email": "info@njalaagri.sl",
-        "rating": 4.4,
-        "price_range": "$$",
-        "description": "Agricultural consulting and farming services. Crop management, soil testing, and farming equipment rental.",
-        "services": ["Crop Consulting", "Soil Testing", "Equipment Rental", "Irrigation Setup", "Pest Control"]
     }
 ]
 
-# Service categories and subcategories
+# Service categories
 SERVICE_CATEGORIES = {
     "Fashion & Clothing": ["Tailoring", "Shoe Repair", "Dry Cleaning", "Fashion Design", "Gele Tying"],
-    "Transportation": ["Car Rental", "Taxi Service", "Logistics", "Moving Services", "Okada (Motorcycle)", "Poda Poda"],
-    "Beauty & Wellness": ["Hair Salon", "Barber Shop", "Spa", "Fitness Center", "Massage Therapy", "Traditional Medicine"],
+    "Transportation": ["Car Rental", "Taxi Service", "Logistics", "Moving Services", "Okada", "Poda Poda"],
+    "Beauty & Wellness": ["Hair Salon", "Barber Shop", "Spa", "Fitness Center", "Massage Therapy"],
     "Technology": ["Computer Repair", "Phone Repair", "Web Development", "IT Support", "CCTV Installation"],
     "Food & Catering": ["Catering", "Restaurant", "Food Delivery", "Baking", "Street Food"],
-    "Home & Garden": ["Landscaping", "Cleaning Service", "Plumbing", "Electrical", "Carpentry", "Roofing"],
-    "Professional Services": ["Legal Services", "Accounting", "Consulting", "Real Estate", "Agricultural Consulting"],
-    "Education": ["Tutoring", "Training Centers", "Language Classes", "Skill Development", "Computer Training"],
-    "Health & Medical": ["Clinics", "Pharmacy", "Dental Care", "Traditional Healing", "Laboratory Services"],
-    "Entertainment": ["Event Planning", "Photography", "Music", "DJ Services", "Traditional Dancing"],
-    "Agriculture": ["Farming Services", "Equipment Rental", "Crop Consulting", "Livestock", "Fish Farming"],
-    "Construction": ["Building Construction", "Road Construction", "Renovation", "Painting", "Tiling"]
+    "Home & Garden": ["Landscaping", "Cleaning Service", "Plumbing", "Electrical", "Carpentry"],
+    "Professional Services": ["Legal Services", "Accounting", "Consulting", "Real Estate"],
+    "Education": ["Tutoring", "Training Centers", "Language Classes", "Skill Development"],
+    "Health & Medical": ["Clinics", "Pharmacy", "Dental Care", "Traditional Healing"],
+    "Entertainment": ["Event Planning", "Photography", "Music", "DJ Services"]
 }
 
-# Initialize session state for modal
-if 'selected_service' not in st.session_state:
-    st.session_state.selected_service = None
-if 'show_modal' not in st.session_state:
-    st.session_state.show_modal = False
-
-# CSS for styling
 def get_css():
     return f"""
     <style>
-        /* Main background */
         .stApp {{
             background-color: {COLORS["background"]};
         }}
         
-        /* Headers */
         h1, h2, h3 {{
             color: {COLORS["text"]};
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }}
         
-        /* Dashboard title styling */
         .main-header {{
             background-color: {COLORS["primary"]};
             padding: 20px;
@@ -233,7 +162,6 @@ def get_css():
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }}
         
-        /* Search container */
         .search-container {{
             background-color: white;
             padding: 25px;
@@ -243,7 +171,6 @@ def get_css():
             border-left: 5px solid {COLORS["primary"]};
         }}
         
-        /* Service cards with fixed dimensions and click functionality */
         .service-card {{
             background-color: white;
             border-radius: 10px;
@@ -257,7 +184,6 @@ def get_css():
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            cursor: pointer;
             position: relative;
         }}
         
@@ -266,7 +192,6 @@ def get_css():
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }}
         
-        /* Service card content layout */
         .service-card-content {{
             flex-grow: 1;
             display: flex;
@@ -353,7 +278,6 @@ def get_css():
             color: {COLORS["text"]};
         }}
         
-        /* Click indicator */
         .click-indicator {{
             position: absolute;
             top: 15px;
@@ -370,95 +294,6 @@ def get_css():
             font-weight: bold;
         }}
         
-        /* Modal styles */
-        .service-modal {{
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }}
-        
-        .modal-content {{
-            background-color: white;
-            border-radius: 10px;
-            padding: 30px;
-            max-width: 800px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }}
-        
-        .modal-header {{
-            background-color: {COLORS["primary"]};
-            color: white;
-            padding: 20px;
-            margin: -30px -30px 20px -30px;
-            border-radius: 10px 10px 0 0;
-            text-align: center;
-        }}
-        
-        .close-button {{
-            background-color: #f44336;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            float: right;
-            cursor: pointer;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin: -10px -10px 0 0;
-        }}
-        
-        .close-button:hover {{
-            background-color: #d32f2f;
-        }}
-        
-        /* Product gallery */
-        .product-gallery {{
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-        }}
-        
-        .product-image {{
-            width: 100%;
-            height: 150px;
-            background-color: {COLORS["background"]};
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3em;
-            color: {COLORS["primary"]};
-            border: 2px solid {COLORS["accent"]};
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }}
-        
-        .product-image:hover {{
-            transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }}
-        
-        .product-label {{
-            text-align: center;
-            margin-top: 8px;
-            font-weight: bold;
-            color: {COLORS["text"]};
-            font-size: 0.9em;
-        }}
-        
-        /* Stats container */
         .stats-container {{
             display: flex;
             justify-content: space-around;
@@ -485,7 +320,6 @@ def get_css():
             font-size: 0.9em;
         }}
         
-        /* No results */
         .no-results {{
             text-align: center;
             padding: 40px;
@@ -496,7 +330,6 @@ def get_css():
             border-left: 5px solid {COLORS["accent"]};
         }}
         
-        /* Button styling */
         .stButton>button {{
             background-color: {COLORS["primary"]} !important;
             color: white !important;
@@ -512,13 +345,38 @@ def get_css():
             background-color: {COLORS["text"]} !important;
         }}
         
-        /* Expander styling */
-        .streamlit-expanderHeader {{
-            background-color: {COLORS["secondary"]} !important;
-            padding: 10px 15px !important;
-            border-radius: 8px !important;
-            color: {COLORS["text"]} !important;
-            font-weight: bold !important;
+        .product-gallery {{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }}
+        
+        .product-image {{
+            width: 100%;
+            height: 150px;
+            background-color: {COLORS["background"]};
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: {COLORS["primary"]};
+            border: 2px solid {COLORS["accent"]};
+            transition: transform 0.3s ease;
+        }}
+        
+        .product-image:hover {{
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }}
+        
+        .product-label {{
+            text-align: center;
+            margin-top: 8px;
+            font-weight: bold;
+            color: {COLORS["text"]};
+            font-size: 0.9em;
         }}
     </style>
     """
@@ -582,58 +440,9 @@ def get_sample_products(service_category):
             {"icon": "🚿", "name": "Plumbing"},
             {"icon": "💡", "name": "Electrical"},
             {"icon": "🔨", "name": "Carpentry"}
-        ],
-        "Professional Services": [
-            {"icon": "⚖️", "name": "Legal Documents"},
-            {"icon": "📊", "name": "Accounting"},
-            {"icon": "📈", "name": "Consulting"},
-            {"icon": "🏠", "name": "Real Estate"},
-            {"icon": "📝", "name": "Business Plans"},
-            {"icon": "💼", "name": "Corporate Services"}
-        ],
-        "Education": [
-            {"icon": "📚", "name": "Books & Materials"},
-            {"icon": "💻", "name": "Computer Training"},
-            {"icon": "🌍", "name": "Language Classes"},
-            {"icon": "🎓", "name": "Certificates"},
-            {"icon": "✏️", "name": "Tutoring"},
-            {"icon": "🔬", "name": "Science Labs"}
-        ],
-        "Health & Medical": [
-            {"icon": "🩺", "name": "Medical Checkups"},
-            {"icon": "💊", "name": "Medications"},
-            {"icon": "🧪", "name": "Lab Tests"},
-            {"icon": "🦷", "name": "Dental Care"},
-            {"icon": "👁️", "name": "Eye Care"},
-            {"icon": "🚑", "name": "Emergency Services"}
-        ],
-        "Entertainment": [
-            {"icon": "🎵", "name": "Music Events"},
-            {"icon": "📸", "name": "Photography"},
-            {"icon": "🎥", "name": "Videography"},
-            {"icon": "🎤", "name": "DJ Services"},
-            {"icon": "🎊", "name": "Event Planning"},
-            {"icon": "🎭", "name": "Entertainment"}
-        ],
-        "Agriculture": [
-            {"icon": "🌾", "name": "Crop Farming"},
-            {"icon": "🐄", "name": "Livestock"},
-            {"icon": "🐟", "name": "Fish Farming"},
-            {"icon": "🚜", "name": "Farm Equipment"},
-            {"icon": "🌱", "name": "Seeds & Plants"},
-            {"icon": "💧", "name": "Irrigation"}
-        ],
-        "Construction": [
-            {"icon": "🏗️", "name": "Building Construction"},
-            {"icon": "🛤️", "name": "Road Construction"},
-            {"icon": "🎨", "name": "Painting"},
-            {"icon": "🧱", "name": "Masonry"},
-            {"icon": "🔧", "name": "Roofing"},
-            {"icon": "⚡", "name": "Electrical Work"}
         ]
     }
     
-    # Return default if category not found
     return product_samples.get(service_category, [
         {"icon": "📦", "name": "Product 1"},
         {"icon": "📦", "name": "Product 2"},
@@ -648,14 +457,12 @@ def display_service_modal(service):
     if not st.session_state.show_modal or not service:
         return
     
-    # Get sample products for this service category
     products = get_sample_products(service["category"])
     
     modal_html = f"""
-    <div class="service-modal" onclick="this.style.display='none'">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <button class="close-button" onclick="this.parentElement.parentElement.parentElement.style.display='none'">×</button>
+    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background-color: white; border-radius: 10px; padding: 30px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <div style="background-color: {COLORS['primary']}; color: white; padding: 20px; margin: -30px -30px 20px -30px; border-radius: 10px 10px 0 0; text-align: center;">
                 <h2>{service["name"]}</h2>
                 <p>{service["category"]} - {service["subcategory"]}</p>
             </div>
@@ -685,7 +492,6 @@ def display_service_modal(service):
                 <div class="product-gallery">
     """
     
-    # Add product images
     for product in products:
         modal_html += f"""
                     <div>
@@ -694,14 +500,7 @@ def display_service_modal(service):
                     </div>
         """
     
-    modal_html += f"""
-                </div>
-                
-                <div style="margin-top: 30px; text-align: center;">
-                    <button onclick="this.parentElement.parentElement.parentElement.parentElement.style.display='none'" 
-                            style="background-color: {COLORS['primary']}; color: white; padding: 8px 16px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
-                        Close
-                    </button>
+    modal_html += """
                 </div>
             </div>
         </div>
@@ -711,10 +510,8 @@ def display_service_modal(service):
     st.markdown(modal_html, unsafe_allow_html=True)
 
 def display_service_card(service):
-    """Display a service in a card format with fixed dimensions and click functionality"""
+    """Display a service in a card format"""
     rating_stars = "⭐" * int(service["rating"])
-    
-    # Create unique key for this service
     service_key = f"service_{service['name'].replace(' ', '_').replace('.', '_').replace(',', '_').replace("'", '_')}"
     
     card_html = f"""
@@ -738,7 +535,6 @@ def display_service_card(service):
     """
     st.markdown(card_html, unsafe_allow_html=True)
     
-    # Create a button for each card that handles clicks
     if st.button(f"View Details", key=service_key, help=f"Click to view {service['name']} details"):
         st.session_state.selected_service = service
         st.session_state.show_modal = True
@@ -748,55 +544,34 @@ def filter_services(services, filters):
     """Filter services based on user criteria"""
     filtered = services.copy()
     
-    # Filter by search query
     if filters.get("search_query"):
         query = filters["search_query"].lower()
         filtered = [s for s in filtered if 
                    query in s["name"].lower() or 
                    query in s["description"].lower() or 
-                   query in s["category"].lower() or
-                   query in s["subcategory"].lower() or
-                   any(query in service.lower() for service in s["services"])]
+                   query in s["category"].lower()]
     
-    # Filter by category
     if filters.get("category") and filters["category"] != "All Categories":
         filtered = [s for s in filtered if s["category"] == filters["category"]]
     
-    # Filter by subcategory
-    if filters.get("subcategory") and filters["subcategory"] != "All Subcategories":
-        filtered = [s for s in filtered if s["subcategory"] == filters["subcategory"]]
-    
-    # Filter by district
     if filters.get("district") and filters["district"] != "All Districts":
         filtered = [s for s in filtered if s["district"] == filters["district"]]
     
-    # Filter by city
     if filters.get("city") and filters["city"] != "All Cities":
         filtered = [s for s in filtered if s["city"] == filters["city"]]
     
-    # Filter by area
-    if filters.get("area") and filters["area"] != "All Areas":
-        filtered = [s for s in filtered if s["area"] == filters["area"]]
-    
-    # Filter by gender
     if filters.get("gender") and filters["gender"] != "All":
         filtered = [s for s in filtered if s["gender_served"] in ["All", filters["gender"]]]
     
-    # Filter by rating
     if filters.get("min_rating"):
         filtered = [s for s in filtered if s["rating"] >= filters["min_rating"]]
-    
-    # Filter by price range
-    if filters.get("price_range") and filters["price_range"] != "Any Price":
-        filtered = [s for s in filtered if s["price_range"] == filters["price_range"]]
     
     return filtered
 
 def main():
-    # Apply custom CSS
     st.markdown(get_css(), unsafe_allow_html=True)
     
-    # Main header
+    # Header
     header_html = f"""
     <div class="main-header">
         <h1>🔍 Solution Center Sierra Leone</h1>
@@ -806,7 +581,7 @@ def main():
     """
     st.markdown(header_html, unsafe_allow_html=True)
     
-    # Statistics section
+    # Statistics
     total_services = len(SAMPLE_SERVICES)
     total_categories = len(SERVICE_CATEGORIES)
     total_districts = len(set(s["district"] for s in SAMPLE_SERVICES))
@@ -815,7 +590,7 @@ def main():
     stats_html = f"""
     <div class="stats-container">
         <div class="stat-item">
-            <div class="stat-number">{total_services}+</div>
+            <div class="stat-number">{total_services}</div>
             <div class="stat-label">Services Listed</div>
         </div>
         <div class="stat-item">
@@ -834,106 +609,56 @@ def main():
     """
     st.markdown(stats_html, unsafe_allow_html=True)
     
-    # Search and Filter Section
+    # Search
     st.markdown('<div class="search-container">', unsafe_allow_html=True)
-    
-    # Search bar
     col1, col2 = st.columns([3, 1])
     with col1:
         search_query = st.text_input("🔍 Search for any service...", 
                                    placeholder="e.g., tailoring, car rental, beauty salon")
     with col2:
         search_button = st.button("Search", type="primary")
-    
     st.markdown('</div>', unsafe_allow_html=True)
     
-    # Advanced Filters
+    # Filters
     with st.expander("🎯 Advanced Filters", expanded=False):
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            # Category filter
             categories = ["All Categories"] + list(SERVICE_CATEGORIES.keys())
             selected_category = st.selectbox("Category", categories)
-            
-            # Subcategory filter (dynamic based on category)
-            if selected_category != "All Categories":
-                subcategories = ["All Subcategories"] + SERVICE_CATEGORIES[selected_category]
-            else:
-                all_subcategories = []
-                for cat_subs in SERVICE_CATEGORIES.values():
-                    all_subcategories.extend(cat_subs)
-                subcategories = ["All Subcategories"] + list(set(all_subcategories))
-            
-            selected_subcategory = st.selectbox("Subcategory", subcategories)
         
         with col2:
-            # Location filters
             districts = ["All Districts"] + sorted(list(set(s["district"] for s in SAMPLE_SERVICES)))
             selected_district = st.selectbox("District", districts)
             
-            # Cities (dynamic based on district)
             if selected_district != "All Districts":
                 cities = ["All Cities"] + sorted([s["city"] for s in SAMPLE_SERVICES if s["district"] == selected_district])
             else:
                 cities = ["All Cities"] + sorted(list(set(s["city"] for s in SAMPLE_SERVICES)))
-            
             selected_city = st.selectbox("City", cities)
-            
-            # Areas (dynamic based on city)
-            if selected_city != "All Cities":
-                areas = ["All Areas"] + sorted([s["area"] for s in SAMPLE_SERVICES if s["city"] == selected_city])
-            else:
-                areas = ["All Areas"] + sorted(list(set(s["area"] for s in SAMPLE_SERVICES)))
-            
-            selected_area = st.selectbox("Area", areas)
         
         with col3:
-            # Other filters
             selected_gender = st.selectbox("Gender Preference", ["All", "Men", "Women"])
             min_rating = st.select_slider("Minimum Rating", 
                                         options=[1.0, 2.0, 3.0, 4.0, 4.5, 5.0],
                                         value=1.0)
-            price_ranges = ["Any Price", "$", "$", "$$"]
-            selected_price = st.selectbox("Price Range", price_ranges)
     
-    # Compile filters
+    # Apply filters
     filters = {
         "search_query": search_query,
         "category": selected_category,
-        "subcategory": selected_subcategory,
         "district": selected_district,
         "city": selected_city,
-        "area": selected_area,
         "gender": selected_gender,
-        "min_rating": min_rating,
-        "price_range": selected_price
+        "min_rating": min_rating
     }
     
-    # Filter services
     filtered_services = filter_services(SAMPLE_SERVICES, filters)
-    
-    # Sort options
-    col1, col2 = st.columns([3, 1])
-    with col2:
-        sort_by = st.selectbox("Sort by", ["Rating (High to Low)", "Rating (Low to High)", 
-                                         "Name (A-Z)", "Name (Z-A)"])
-    
-    # Apply sorting
-    if sort_by == "Rating (High to Low)":
-        filtered_services.sort(key=lambda x: x["rating"], reverse=True)
-    elif sort_by == "Rating (Low to High)":
-        filtered_services.sort(key=lambda x: x["rating"])
-    elif sort_by == "Name (A-Z)":
-        filtered_services.sort(key=lambda x: x["name"])
-    elif sort_by == "Name (Z-A)":
-        filtered_services.sort(key=lambda x: x["name"], reverse=True)
     
     # Display results
     st.markdown(f"### Found {len(filtered_services)} service(s)")
     
     if filtered_services:
-        # Display services in a grid
         for i in range(0, len(filtered_services), 2):
             col1, col2 = st.columns(2)
             
@@ -943,74 +668,30 @@ def main():
             if i + 1 < len(filtered_services):
                 with col2:
                     display_service_card(filtered_services[i + 1])
+    else:
+        no_results_html = """
+        <div class="no-results">
+            <h3>🔍 No Services Found</h3>
+            <p>Try adjusting your search criteria or filters.</p>
+        </div>
+        """
+        st.markdown(no_results_html, unsafe_allow_html=True)
     
-    # Display modal if a service is selected
+    # Display modal
     if st.session_state.show_modal and st.session_state.selected_service:
         display_service_modal(st.session_state.selected_service)
         
-        # Add a close button in the sidebar or main area
         if st.button("❌ Close Details", type="secondary"):
             st.session_state.show_modal = False
             st.session_state.selected_service = None
             st.rerun()
-    else:
-        # No results found
-        if not filtered_services:
-            no_results_html = f"""
-            <div class="no-results">
-                <h3>🔍 No Services Found</h3>
-                <p>Try adjusting your search criteria or filters.</p>
-                <p><strong>Suggestions:</strong></p>
-                <ul style="text-align: left; display: inline-block;">
-                    <li>Use broader search terms</li>
-                    <li>Remove some filters</li>
-                    <li>Check spelling</li>
-                    <li>Try searching by category instead</li>
-                </ul>
-            </div>
-            """
-            st.markdown(no_results_html, unsafe_allow_html=True)
-    
-    # Footer
-    st.markdown("---")
-    
-    # Add service section
-    with st.expander("📝 Add Your Service to Solution Center"):
-        st.markdown("**Are you a service provider?** Join our platform to reach more customers!")
-        
-        with st.form("add_service_form"):
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                business_name = st.text_input("Business Name*")
-                business_category = st.selectbox("Category*", list(SERVICE_CATEGORIES.keys()))
-                business_phone = st.text_input("Phone Number*")
-                business_email = st.text_input("Email Address*")
-            
-            with col2:
-                business_city = st.text_input("City*")
-                business_area = st.text_input("Area*")
-                business_district = st.text_input("District*")
-                business_gender = st.selectbox("Gender Served", ["All", "Men", "Women"])
-            
-            business_description = st.text_area("Business Description*")
-            business_services = st.text_input("Services Offered (comma-separated)*")
-            
-            submitted = st.form_submit_button("Submit for Review")
-            
-            if submitted:
-                if business_name and business_category and business_phone and business_email:
-                    st.success("Thank you! Your service has been submitted for review. We'll contact you within 24 hours.")
-                else:
-                    st.error("Please fill in all required fields (*)")
     
     # Footer
     footer_html = f"""
-    <div style="background-color: {COLORS['primary']}; color: white; padding: 20px; border-radius: 10px; margin-top: 30px; text-align: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+    <div style="background-color: {COLORS['primary']}; color: white; padding: 20px; border-radius: 10px; margin-top: 30px; text-align: center;">
         <h4>Solution Center Sierra Leone</h4>
-        <p>Your trusted directory for all services across Salone | © 2025 Solution Center SL</p>
+        <p>Your trusted directory for all services across Salone | © 2025</p>
         <p>📧 info@solutioncenter.sl | 📞 +232-76-SOLUTION</p>
-        <p><small>Connecting you to the best services from Freetown to Bo, Kenema to Makeni</small></p>
     </div>
     """
     st.markdown(footer_html, unsafe_allow_html=True)

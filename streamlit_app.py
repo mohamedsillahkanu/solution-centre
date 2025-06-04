@@ -11,16 +11,16 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Define color theme - professional blue palette
+# Define color theme - blue and white palette
 COLORS = {
-    "primary": "#2E86AB",       # Professional blue
-    "secondary": "#A23B72",     # Accent pink/purple
-    "background": "#F18F01",    # Warm orange
-    "light_bg": "#C73E1D",      # Deep red
-    "text": "#1B263B",          # Dark blue-gray
-    "accent": "#4ECDC4",        # Teal accent
+    "primary": "#1E3A8A",       # Deep blue
+    "secondary": "#3B82F6",     # Medium blue
+    "background": "#EFF6FF",    # Very light blue
+    "light_bg": "#DBEAFE",      # Light blue
+    "text": "#1E40AF",          # Blue text
+    "accent": "#60A5FA",        # Light accent blue
     "white": "#FFFFFF",
-    "light_gray": "#F8F9FA"
+    "light_gray": "#F1F5F9"
 }
 
 # Sample data for services (in real app, this would come from a database)
@@ -334,22 +334,24 @@ def get_greeting():
         return "Good Evening"
 
 def display_service_card(service):
-    """Display a service in a card format"""
+    """Display a service in a card format with fixed dimensions"""
     rating_stars = "⭐" * int(service["rating"])
     
     card_html = f"""
     <div class="service-card">
-        <div class="service-name">{service["name"]}</div>
-        <div class="service-category">{service["category"]} - {service["subcategory"]}</div>
-        <div class="service-location">📍 {service["area"]}, {service["city"]}, {service["district"]}</div>
-        <div class="service-rating">{rating_stars} {service["rating"]}/5.0 | {service["price_range"]}</div>
-        <p style="margin: 10px 0; color: {COLORS["text"]};">{service["description"]}</p>
-        <div><strong>Services:</strong> {", ".join(service["services"])}</div>
-        <div style="margin-top: 10px;"><strong>Gender Served:</strong> {service["gender_served"]}</div>
-        <div class="service-contact">
-            <strong>Contact:</strong><br>
-            📞 {service["phone"]}<br>
-            📧 {service["email"]}
+        <div class="service-card-content">
+            <div class="service-name">{service["name"]}</div>
+            <div class="service-category">{service["category"]} - {service["subcategory"]}</div>
+            <div class="service-location">📍 {service["area"]}, {service["city"]}, {service["district"]}</div>
+            <div class="service-rating">{rating_stars} {service["rating"]}/5.0 | {service["price_range"]}</div>
+            <div class="service-description">{service["description"]}</div>
+            <div class="service-services"><strong>Services:</strong> {", ".join(service["services"])}</div>
+            <div class="service-gender"><strong>Gender Served:</strong> {service["gender_served"]}</div>
+            <div class="service-contact">
+                <strong>Contact:</strong><br>
+                📞 {service["phone"]}<br>
+                📧 {service["email"]}
+            </div>
         </div>
     </div>
     """

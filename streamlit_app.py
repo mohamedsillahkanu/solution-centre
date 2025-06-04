@@ -35,7 +35,7 @@ SAMPLE_SERVICES = [
         "phone": "+232-76-123-456",
         "email": "info@saloneelite.sl",
         "rating": 4.8,
-        "price_range": "$",
+        "price_range": "$$",
         "description": "Premium tailoring services for men and women. Custom suits, traditional wear, and geles for special occasions.",
         "services": ["Custom Suits", "Traditional Wear", "Gele Tying", "Wedding Outfits", "Kaba & Slits"]
     },
@@ -51,7 +51,7 @@ SAMPLE_SERVICES = [
         "phone": "+232-88-765-432",
         "email": "bookings@kamaracars.sl",
         "rating": 4.5,
-        "price_range": "$$",
+        "price_range": "$$$",
         "description": "Reliable car rental services with well-maintained vehicles. Airport transfers and city tours available.",
         "services": ["Economy Cars", "SUVs", "Lungi Airport Transfers", "City Tours", "Wedding Cars"]
     },
@@ -67,7 +67,7 @@ SAMPLE_SERVICES = [
         "phone": "+232-76-456-789",
         "email": "aminata@beautypalace.sl",
         "rating": 4.9,
-        "price_range": "$",
+        "price_range": "$$",
         "description": "Full-service beauty salon specializing in natural hair care, braiding, and traditional Sierra Leonean styles.",
         "services": ["Natural Hair Care", "Braiding", "Locs Maintenance", "Makeup", "Henna Designs"]
     },
@@ -99,7 +99,7 @@ SAMPLE_SERVICES = [
         "phone": "+232-76-987-654",
         "email": "orders@mamafatmata.sl",
         "rating": 4.7,
-        "price_range": "$",
+        "price_range": "$$",
         "description": "Authentic Sierra Leonean cuisine for events and daily meals. Specializing in jollof rice, cassava leaves, and groundnut soup.",
         "services": ["Event Catering", "Daily Meals", "Traditional Dishes", "Wedding Catering", "Corporate Lunch"]
     },
@@ -115,7 +115,7 @@ SAMPLE_SERVICES = [
         "phone": "+232-88-234-567",
         "email": "info@greenhills.sl",
         "rating": 4.4,
-        "price_range": "$$",
+        "price_range": "$$$",
         "description": "Professional landscaping and garden maintenance services for residential and commercial properties.",
         "services": ["Garden Design", "Lawn Maintenance", "Tree Planting", "Irrigation Systems", "Compound Cleaning"]
     },
@@ -131,7 +131,7 @@ SAMPLE_SERVICES = [
         "phone": "+232-76-345-678",
         "email": "info@saloneexpress.sl",
         "rating": 4.3,
-        "price_range": "$",
+        "price_range": "$$",
         "description": "Reliable logistics and delivery services across Sierra Leone. Same-day delivery in major cities.",
         "services": ["Package Delivery", "Moving Services", "Cargo Transport", "Same-Day Delivery", "Interstate Transport"]
     },
@@ -147,7 +147,7 @@ SAMPLE_SERVICES = [
         "phone": "+232-22-123-456",
         "email": "clinic@drbangura.sl",
         "rating": 4.6,
-        "price_range": "$",
+        "price_range": "$$",
         "description": "Full-service medical clinic providing quality healthcare services. General practice and specialist consultations.",
         "services": ["General Consultation", "Laboratory Tests", "Vaccination", "Health Checkups", "Emergency Care"]
     },
@@ -179,7 +179,7 @@ SAMPLE_SERVICES = [
         "phone": "+232-77-456-789",
         "email": "info@njalaagri.sl",
         "rating": 4.4,
-        "price_range": "$",
+        "price_range": "$$",
         "description": "Agricultural consulting and farming services. Crop management, soil testing, and farming equipment rental.",
         "services": ["Crop Consulting", "Soil Testing", "Equipment Rental", "Irrigation Setup", "Pest Control"]
     }
@@ -201,99 +201,273 @@ SERVICE_CATEGORIES = {
     "Construction": ["Building Construction", "Road Construction", "Renovation", "Painting", "Tiling"]
 }
 
+# Initialize session state for modal
+if 'selected_service' not in st.session_state:
+    st.session_state.selected_service = None
+if 'show_modal' not in st.session_state:
+    st.session_state.show_modal = False
+
 # CSS for styling
 def get_css():
     return f"""
     <style>
+        /* Main background */
         .stApp {{
-            background: linear-gradient(135deg, {COLORS["background"]} 0%, {COLORS["primary"]} 100%);
-            min-height: 100vh;
+            background-color: {COLORS["background"]};
         }}
         
+        /* Headers */
+        h1, h2, h3 {{
+            color: {COLORS["text"]};
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }}
+        
+        /* Dashboard title styling */
         .main-header {{
-            background: linear-gradient(135deg, {COLORS["primary"]} 0%, {COLORS["secondary"]} 100%);
-            padding: 30px;
-            border-radius: 15px;
+            background-color: {COLORS["primary"]};
+            padding: 20px;
+            border-radius: 10px;
             color: white;
             text-align: center;
             margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }}
         
+        /* Search container */
         .search-container {{
-            background: {COLORS["white"]};
+            background-color: white;
             padding: 25px;
-            border-radius: 15px;
+            border-radius: 10px;
             margin-bottom: 25px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid {COLORS["primary"]};
         }}
         
+        /* Service cards with fixed dimensions and click functionality */
         .service-card {{
-            background: {COLORS["white"]};
-            border-radius: 12px;
+            background-color: white;
+            border-radius: 10px;
             padding: 20px;
             margin-bottom: 15px;
-            border-left: 5px solid {COLORS["accent"]};
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            border-left: 5px solid {COLORS["primary"]};
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 450px !important;
+            width: 100% !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            position: relative;
         }}
         
         .service-card:hover {{
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }}
+        
+        /* Service card content layout */
+        .service-card-content {{
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }}
         
         .service-name {{
-            color: {COLORS["primary"]};
+            color: {COLORS["text"]};
             font-size: 1.4em;
             font-weight: bold;
             margin-bottom: 8px;
+            height: 45px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
         }}
         
         .service-category {{
-            background: {COLORS["secondary"]};
-            color: white;
+            background-color: {COLORS["secondary"]};
+            color: {COLORS["text"]};
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.8em;
             display: inline-block;
             margin-bottom: 10px;
+            width: fit-content;
+            font-weight: bold;
         }}
         
         .service-location {{
             color: {COLORS["text"]};
             font-weight: 500;
             margin-bottom: 8px;
+            height: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }}
         
         .service-rating {{
-            color: #FFA500;
+            color: #FF9800;
             font-weight: bold;
+            margin-bottom: 10px;
+            height: 20px;
+        }}
+        
+        .service-description {{
+            color: {COLORS["text"]};
+            margin: 10px 0;
+            height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            font-size: 0.9em;
+        }}
+        
+        .service-services {{
+            margin-bottom: 10px;
+            height: 40px;
+            overflow: hidden;
+            font-size: 0.9em;
+            color: {COLORS["text"]};
+        }}
+        
+        .service-gender {{
+            margin-bottom: 10px;
+            height: 20px;
+            font-size: 0.9em;
+            color: {COLORS["text"]};
         }}
         
         .service-contact {{
-            background: {COLORS["light_gray"]};
+            background-color: {COLORS["background"]};
             padding: 10px;
             border-radius: 8px;
-            margin-top: 10px;
+            margin-top: auto;
+            height: 60px;
+            font-size: 0.85em;
+            color: {COLORS["text"]};
         }}
         
-        .filter-section {{
-            background: {COLORS["white"]};
+        /* Click indicator */
+        .click-indicator {{
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: {COLORS["primary"]};
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            font-weight: bold;
+        }}
+        
+        /* Modal styles */
+        .service-modal {{
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }}
         
+        .modal-content {{
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }}
+        
+        .modal-header {{
+            background-color: {COLORS["primary"]};
+            color: white;
+            padding: 20px;
+            margin: -30px -30px 20px -30px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+        }}
+        
+        .close-button {{
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            float: right;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: -10px -10px 0 0;
+        }}
+        
+        .close-button:hover {{
+            background-color: #d32f2f;
+        }}
+        
+        /* Product gallery */
+        .product-gallery {{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }}
+        
+        .product-image {{
+            width: 100%;
+            height: 150px;
+            background-color: {COLORS["background"]};
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: {COLORS["primary"]};
+            border: 2px solid {COLORS["accent"]};
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }}
+        
+        .product-image:hover {{
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }}
+        
+        .product-label {{
+            text-align: center;
+            margin-top: 8px;
+            font-weight: bold;
+            color: {COLORS["text"]};
+            font-size: 0.9em;
+        }}
+        
+        /* Stats container */
         .stats-container {{
             display: flex;
             justify-content: space-around;
-            background: {COLORS["white"]};
+            background-color: white;
             padding: 20px;
-            border-radius: 12px;
+            border-radius: 10px;
             margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid {COLORS["primary"]};
         }}
         
         .stat-item {{
@@ -311,13 +485,40 @@ def get_css():
             font-size: 0.9em;
         }}
         
+        /* No results */
         .no-results {{
             text-align: center;
             padding: 40px;
             color: {COLORS["text"]};
-            background: {COLORS["white"]};
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid {COLORS["accent"]};
+        }}
+        
+        /* Button styling */
+        .stButton>button {{
+            background-color: {COLORS["primary"]} !important;
+            color: white !important;
+            border-radius: 5px !important;
+            border: none !important;
+            padding: 8px 16px !important;
+            width: 100% !important;
+            font-weight: bold !important;
+            transition: background-color 0.3s !important;
+        }}
+        
+        .stButton>button:hover {{
+            background-color: {COLORS["text"]} !important;
+        }}
+        
+        /* Expander styling */
+        .streamlit-expanderHeader {{
+            background-color: {COLORS["secondary"]} !important;
+            padding: 10px 15px !important;
+            border-radius: 8px !important;
+            color: {COLORS["text"]} !important;
+            font-weight: bold !important;
         }}
     </style>
     """
@@ -330,12 +531,6 @@ def get_greeting():
         return "Good Afternoon"
     else:
         return "Good Evening"
-
-# Initialize session state for modal
-if 'selected_service' not in st.session_state:
-    st.session_state.selected_service = None
-if 'show_modal' not in st.session_state:
-    st.session_state.show_modal = False
 
 def get_sample_products(service_category):
     """Get sample product images based on service category"""
@@ -486,12 +681,7 @@ def display_service_modal(service):
                     <p><strong>Available Services:</strong> {", ".join(service["services"])}</p>
                 </div>
                 
-                <h3 style="color: {COLORS['text']}; margin-bottom: 15px;">📸 Sample Products/Services</h3>15px;">🛍️ Services & Products</h3>
-                <div style="margin-bottom: 20px;">
-                    <p><strong>Available Services:</strong> {", ".join(service["services"])}</p>
-                </div>
-                
-                <h3 style="color: {COLORS['primary']}; margin-bottom: 15px;">📸 Sample Products/Services</h3>
+                <h3 style="color: {COLORS['text']}; margin-bottom: 15px;">📸 Sample Products/Services</h3>
                 <div class="product-gallery">
     """
     
@@ -509,7 +699,7 @@ def display_service_modal(service):
                 
                 <div style="margin-top: 30px; text-align: center;">
                     <button onclick="this.parentElement.parentElement.parentElement.parentElement.style.display='none'" 
-                            style="background: {COLORS['primary']}; color: white; padding: 12px 30px; border: none; border-radius: 25px; font-size: 1.1em; font-weight: bold; cursor: pointer;">
+                            style="background-color: {COLORS['primary']}; color: white; padding: 8px 16px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
                         Close
                     </button>
                 </div>
@@ -519,11 +709,17 @@ def display_service_modal(service):
     """
     
     st.markdown(modal_html, unsafe_allow_html=True)
-    """Display a service in a card format with fixed dimensions"""
+
+def display_service_card(service):
+    """Display a service in a card format with fixed dimensions and click functionality"""
     rating_stars = "⭐" * int(service["rating"])
+    
+    # Create unique key for this service
+    service_key = f"service_{service['name'].replace(' ', '_').replace('.', '_').replace(',', '_').replace("'", '_')}"
     
     card_html = f"""
     <div class="service-card">
+        <div class="click-indicator">👁️</div>
         <div class="service-card-content">
             <div class="service-name">{service["name"]}</div>
             <div class="service-category">{service["category"]} - {service["subcategory"]}</div>
@@ -541,6 +737,12 @@ def display_service_modal(service):
     </div>
     """
     st.markdown(card_html, unsafe_allow_html=True)
+    
+    # Create a button for each card that handles clicks
+    if st.button(f"View Details", key=service_key, help=f"Click to view {service['name']} details"):
+        st.session_state.selected_service = service
+        st.session_state.show_modal = True
+        st.rerun()
 
 def filter_services(services, filters):
     """Filter services based on user criteria"""
@@ -597,7 +799,7 @@ def main():
     # Main header
     header_html = f"""
     <div class="main-header">
-        <h1>🔍 Solution Center</h1>
+        <h1>🔍 Solution Center Sierra Leone</h1>
         <h3>Find Any Service, Anywhere, Anytime</h3>
         <p>{get_greeting()} | {datetime.now().strftime("%A, %B %d, %Y")}</p>
     </div>
@@ -607,7 +809,6 @@ def main():
     # Statistics section
     total_services = len(SAMPLE_SERVICES)
     total_categories = len(SERVICE_CATEGORIES)
-    total_cities = len(set(s["city"] for s in SAMPLE_SERVICES))
     total_districts = len(set(s["district"] for s in SAMPLE_SERVICES))
     avg_rating = sum(s["rating"] for s in SAMPLE_SERVICES) / len(SAMPLE_SERVICES)
     
@@ -693,7 +894,7 @@ def main():
             min_rating = st.select_slider("Minimum Rating", 
                                         options=[1.0, 2.0, 3.0, 4.0, 4.5, 5.0],
                                         value=1.0)
-            price_ranges = ["Any Price", "$", "$$", "$$$"]
+            price_ranges = ["Any Price", "$", "$", "$$"]
             selected_price = st.selectbox("Price Range", price_ranges)
     
     # Compile filters
@@ -754,20 +955,21 @@ def main():
             st.rerun()
     else:
         # No results found
-        no_results_html = f"""
-        <div class="no-results">
-            <h3>🔍 No Services Found</h3>
-            <p>Try adjusting your search criteria or filters.</p>
-            <p><strong>Suggestions:</strong></p>
-            <ul style="text-align: left; display: inline-block;">
-                <li>Use broader search terms</li>
-                <li>Remove some filters</li>
-                <li>Check spelling</li>
-                <li>Try searching by category instead</li>
-            </ul>
-        </div>
-        """
-        st.markdown(no_results_html, unsafe_allow_html=True)
+        if not filtered_services:
+            no_results_html = f"""
+            <div class="no-results">
+                <h3>🔍 No Services Found</h3>
+                <p>Try adjusting your search criteria or filters.</p>
+                <p><strong>Suggestions:</strong></p>
+                <ul style="text-align: left; display: inline-block;">
+                    <li>Use broader search terms</li>
+                    <li>Remove some filters</li>
+                    <li>Check spelling</li>
+                    <li>Try searching by category instead</li>
+                </ul>
+            </div>
+            """
+            st.markdown(no_results_html, unsafe_allow_html=True)
     
     # Footer
     st.markdown("---")
@@ -804,7 +1006,7 @@ def main():
     
     # Footer
     footer_html = f"""
-    <div style="background: {COLORS['primary']}; color: white; padding: 20px; border-radius: 12px; margin-top: 30px; text-align: center;">
+    <div style="background-color: {COLORS['primary']}; color: white; padding: 20px; border-radius: 10px; margin-top: 30px; text-align: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
         <h4>Solution Center Sierra Leone</h4>
         <p>Your trusted directory for all services across Salone | © 2025 Solution Center SL</p>
         <p>📧 info@solutioncenter.sl | 📞 +232-76-SOLUTION</p>

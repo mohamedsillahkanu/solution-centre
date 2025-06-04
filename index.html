@@ -1,1 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solution Center Sierra Leone - Find Any Service</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #E3F2FD;
+            color: #0D47A1;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .main-header {
+            background-color: #1E88E5;
+            padding: 30px;
+            border-radius: 10px;
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .main-header h3 {
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        /* Stats Container */
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #1E88E5;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #1E88E5;
+        }
+
+        .stat-label {
+            color: #0D47A1;
+            font-size: 0.9em;
+        }
+
+        /* Search Container */
+        .search-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #1E88E5;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #64B5F6;
+            border-radius: 5px;
+            font-size: 16px;
+            color: #0D47A1;
+        }
+
+        .search-btn {
+            background-color: #1E88E5;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .search-btn:hover {
+            background-color: #0D47A1;
+        }
+
+        /* Filters */
+        .filters-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #64B5F6;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #0D47A1;
+        }
+
+        .filter-group select {
+            width: 100%;
+            padding: 8px;
+            border: 2px solid #64B5F6;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #0D47A1;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        /* Service Card */
+        .service-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 5px solid #1E88E5;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .click-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #1E88E5;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .service-name {
+            color: #0D47A1;
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            height: 45px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .service-category {
+            background-color: #90CAF9;
+            color: #0D47A1;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            display: inline-block;
+            margin-bottom: 10px;
+            width: fit-content;
+            font-weight: bold;
+        }
+
+        .service-location {
+            color: #0D47A1;
+            font-weight: 500;
+            margin-bottom: 8px;
+            height: 20px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .service-rating {
+            color: #FF9800;
+            font-weight: bold;
+            margin-bottom: 10px;
+            height: 20px;
+        }
+
+        .service-description {
+            color: #0D47A1;
+            margin: 10px 0;
+            height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            font-size: 0.9em;
+        }
+
+        .service-services {
+            margin-bottom: 10px;
+            height: 40px;
+            overflow: hidden;
+            font-size: 0.9em;
+            color: #0D47A1;
+        }
+
+        .service-gender {
+            margin-bottom: 10px;
+            height: 20px;
+            font-size: 0.9em;
+            color: #0D47A1;
+        }
+
+        .service-contact {
+            background-color: #E3F2FD;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: auto;
+            height: 60px;
+            font-size: 0.85em;
+            color: #0D47A1;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .modal-header {
+            background-color: #1E88E5;
+            color: white;
+            padding: 20px;
+            margin: -30px -30px 20px -30px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+        }
+
+        .close-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            float: right;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: -10px -10px 0 0;
+        }
+
+        .close-button:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Product Gallery */
+        .product-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #E3F2FD 0%, #90CAF9 100%);
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #1E88E5;
+            border: 2px solid #64B5F6;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(30, 136, 229, 0.3);
+            border-color: #1E88E5;
+        }
+
+        .product-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .product-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .product-description {
+            font-size: 0.9em;
+            text-align: center;
+            padding: 0 10px;
+            opacity: 0.8;
+        }
+
+        .product-label {
+            text-align: center;
+            margin-top: 8px;
+            font-weight: bold;
+            color: #0D47A1;
+            font-size: 0.9em;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #1E88E5;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #0D47A1;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #64B5F6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .main-header h1 {
+                font-size: 2em;
+            }
+
+            .stats-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .service-card {
+                height: auto;
+                min-height: 400px;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-input {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="main-header">
+            <h1>🔍 Solution Center Sierra Leone</h1>
+            <h3>Find Any Service, Anywhere, Anytime</h3>
+            <p id="greeting"></p>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Services Listed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">10</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Districts Covered</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4.6</div>
+                <div class="stat-label">Avg Rating</div>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" class="search-input" placeholder="🔍 Search for any service... e.g., tailoring, car rental, beauty salon" id="searchInput">
+                <button class="search-btn" onclick="searchServices()">Search</button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-container">
+            <h3>🎯 Advanced Filters</h3>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="categoryFilter">Category</label>
+                    <select id="categoryFilter" onchange="filterServices()">
+                        <option value="">All Categories</option>
+                        <option value="Fashion & Clothing">Fashion & Clothing</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Beauty & Wellness">Beauty & Wellness</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Food & Catering">Food & Catering</option>
+                        <option value="Home & Garden">Home & Garden</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="districtFilter">District</label>
+                    <select id="districtFilter" onchange="filterServices()">
+                        <option value="">All Districts</option>
+                        <option value="Western Area Urban">Western Area Urban</option>
+                        <option value="Western Area Rural">Western Area Rural</option>
+                        <option value="Bo District">Bo District</option>
+                        <option value="Kenema District">Kenema District</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="genderFilter">Gender Served</label>
+                    <select id="genderFilter" onchange="filterServices()">
+                        <option value="">All</option>
+                        <option value="All">All</option>
+                        <option value="Men">Men</option>
+                        <option value="Women">Women</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="ratingFilter">Minimum Rating</label>
+                    <select id="ratingFilter" onchange="filterServices()">
+                        <option value="1">1+ Stars</option>
+                        <option value="2">2+ Stars</option>
+                        <option value="3">3+ Stars</option>
+                        <option value="4">4+ Stars</option>
+                        <option value="4.5">4.5+ Stars</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Count -->
+        <h3 id="resultsCount">Found 6 service(s)</h3>
+
+        <!-- Services Grid -->
+        <div class="services-grid" id="servicesGrid">
+            <!-- Services will be populated by JavaScript -->
+        </div>
+
+        <!-- No Results -->
+        <div class="no-results" id="noResults" style="display: none;">
+            <h3>🔍 No Services Found</h3>
+            <p>Try adjusting your search criteria or filters.</p>
+            <p><strong>Suggestions:</strong></p>
+            <ul style="text-align: left; display: inline-block;">
+                <li>Use broader search terms</li>
+                <li>Remove some filters</li>
+                <li>Check spelling</li>
+                <li>Try searching by category instead</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <h4>Solution Center Sierra Leone</h4>
+            <p>Your trusted directory for all services across Salone | © 2025</p>
+            <p>📧 info@solutioncenter.sl | 📞 +232-76-SOLUTION</p>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="serviceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close-button" onclick="closeModal()">&times;</button>
+                <h2 id="modalServiceName"></h2>
+                <p id="modalServiceCategory"></p>
+            </div>
+            <div id="modalServiceDetails">
+                <!-- Modal content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const services = [
+            {
+                name: "Salone Elite Tailoring",
+                category: "Fashion & Clothing",
+                subcategory: "Tailoring",
+                city: "Freetown",
+                area: "Aberdeen",
+                district: "Western Area Urban",
+                gender_served: "All",
+                phone: "+232-76-123-456",
+                email: "info@saloneelite.sl",
+                rating: 4.8,
+                price_range: "$$",
+                description: "Premium tailoring services for men and women. Custom suits, traditional wear, and geles for special occasions.",
+                services: ["Custom Suits", "Traditional Wear", "Gele Tying", "Wedding Outfits", "Kaba & Slits"]
+            },
+            {
+                name: "Kamara Car Rentals",
+                category: "Transportation",
+                subcategory: "Car Rental",
+                city: "Freetown",
+                area: "Lumley",
+                district: "Western Area Urban",
+                gender_served: "All",
+                phone: "+232-88-765-432",
+                email: "bookings@kamaracars.sl",
+                rating: 4.5,
+                price_range: "$$$",
+                description: "Reliable car rental services with well-maintained vehicles. Airport transfers and city tours available.",
+                services: ["Economy Cars", "SUVs", "Lungi Airport Transfers", "City Tours", "Wedding Cars"]
+            },
+            {
+                name: "Aminata Beauty Palace",
+                category: "Beauty & Wellness",
+                subcategory: "Hair Salon",
+                city: "Bo",
+                area: "Bo Town Center",
+                district: "Bo District",
+                gender_served: "Women",
+                phone: "+232-76-456-789",
+                email: "aminata@beautypalace.sl",
+                rating: 4.9,
+                price_range: "$$",
+                description: "Full-service beauty salon specializing in natural hair care, braiding, and traditional Sierra Leonean styles.",
+                services: ["Natural Hair Care", "Braiding", "Locs Maintenance", "Makeup", "Henna Designs"]
+            },
+            {
+                name: "TechFix Salone",
+                category: "Technology",
+                subcategory: "Computer Repair",
+                city: "Freetown",
+                area: "Congo Cross",
+                district: "Western Area Urban",
+                gender_served: "All",
+                phone: "+232-77-123-456",
+                email: "support@techfixsalone.sl",
+                rating: 4.6,
+                price_range: "$",
+                description: "Professional computer and mobile device repair services. Software installation and data recovery.",
+                services: ["Laptop Repair", "Phone Repair", "Data Recovery", "Software Installation", "CCTV Setup"]
+            },
+            {
+                name: "Mama Fatmata Kitchen",
+                category: "Food & Catering",
+                subcategory: "Catering",
+                city: "Kenema",
+                area: "Kenema City",
+                district: "Kenema District",
+                gender_served: "All",
+                phone: "+232-76-987-654",
+                email: "orders@mamafatmata.sl",
+                rating: 4.7,
+                price_range: "$$",
+                description: "Authentic Sierra Leonean cuisine for events and daily meals. Specializing in jollof rice, cassava leaves, and groundnut soup.",
+                services: ["Event Catering", "Daily Meals", "Traditional Dishes", "Wedding Catering", "Corporate Lunch"]
+            },
+            {
+                name: "Green Hills Landscaping",
+                category: "Home & Garden",
+                subcategory: "Landscaping",
+                city: "Freetown",
+                area: "Hill Station",
+                district: "Western Area Rural",
+                gender_served: "All",
+                phone: "+232-88-234-567",
+                email: "info@greenhills.sl",
+                rating: 4.4,
+                price_range: "$$$",
+                description: "Professional landscaping and garden maintenance services for residential and commercial properties.",
+                services: ["Garden Design", "Lawn Maintenance", "Tree Planting", "Irrigation Systems", "Compound Cleaning"]
+            }
+        ];
+
+        // Product samples by category with detailed work samples
+        const productSamples = {
+            "Fashion & Clothing": [
+                {
+                    icon: "👔", 
+                    title: "Custom Business Suits", 
+                    description: "Tailored suits for professionals, weddings, and special occasions",
+                    samples: ["Three-piece charcoal suit with silk lining", "Navy blue wedding suit with gold accents", "Classic black tuxedo with bow tie", "Slim-fit gray suit for young professionals", "Traditional kente-inspired formal wear"]
+                },
+                {
+                    icon: "👗", 
+                    title: "Traditional Sierra Leonean Wear", 
+                    description: "Authentic cultural clothing and modern interpretations",
+                    samples: ["Elegant kaba and slit with intricate embroidery", "Modern dashiki dress with contemporary cut", "Traditional gele headwrap styling", "Ceremonial bubu with gold threading", "Fusion outfit combining traditional and modern elements"]
+                },
+                {
+                    icon: "✂️", 
+                    title: "Expert Alterations", 
+                    description: "Professional fitting and modification services",
+                    samples: ["Wedding dress hemming and fitting", "Suit jacket shoulder adjustments", "Trouser waist and length modifications", "Dress size adjustments and reshaping", "Vintage clothing restoration and updates"]
+                },
+                {
+                    icon: "👜", 
+                    title: "Handbags & Accessories", 
+                    description: "Custom leather goods and fashion accessories",
+                    samples: ["Handcrafted leather handbags with local patterns", "Custom beaded jewelry sets", "Traditional headties and scarves", "Leather belts with brass buckles", "Evening clutches with Sierra Leone motifs"]
+                },
+                {
+                    icon: "🧵", 
+                    title: "Embroidery & Decoration", 
+                    description: "Detailed embellishment and decorative work",
+                    samples: ["Hand-embroidered traditional motifs", "Beadwork on ceremonial garments", "Gold thread detailing on formal wear", "Custom monogramming and personalization", "Sequin and crystal applications"]
+                }
+            ],
+            "Transportation": [
+                {
+                    icon: "🚗", 
+                    title: "Economy Car Rentals", 
+                    description: "Affordable and reliable vehicles for daily use",
+                    samples: ["2020 Toyota Corolla - fuel efficient city car", "Honda Civic - perfect for small families", "Nissan Sentra - comfortable long distance travel", "Hyundai Elantra - modern features and safety", "Suzuki Swift - compact and easy to park"]
+                },
+                {
+                    icon: "🚙", 
+                    title: "SUVs & 4WD Vehicles", 
+                    description: "Robust vehicles for challenging terrain",
+                    samples: ["Toyota Prado - premium off-road capability", "Honda Pilot - spacious family SUV", "Nissan Pathfinder - adventure-ready vehicle", "Ford Explorer - powerful engine and comfort", "Mitsubishi Pajero - reliable for rural areas"]
+                },
+                {
+                    icon: "✈️", 
+                    title: "Lungi Airport Transfers", 
+                    description: "Safe and reliable airport transportation service",
+                    samples: ["Direct ferry + vehicle service to Freetown", "VIP airport pickup with meet & greet", "Group transfer service for families", "Late night/early morning transfers available", "Luggage assistance and professional drivers"]
+                },
+                {
+                    icon: "🎉", 
+                    title: "Wedding & Event Cars", 
+                    description: "Special occasion vehicle rentals",
+                    samples: ["Decorated luxury sedans for bride and groom", "Classic vintage cars for traditional ceremonies", "Stretched limousines for grand entrances", "Convoy vehicles for wedding party", "Ceremonial cars with traditional decorations"]
+                },
+                {
+                    icon: "🚐", 
+                    title: "Group Transportation", 
+                    description: "Large capacity vehicles for groups",
+                    samples: ["15-seater minibus for family events", "25-seater bus for corporate outings", "Tourist bus with air conditioning", "School trip transportation", "Conference delegate transportation"]
+                }
+            ],
+            "Beauty & Wellness": [
+                {
+                    icon: "💇", 
+                    title: "Natural Hair Styling", 
+                    description: "Specialized care for African hair textures",
+                    samples: ["Protective braiding styles for hair growth", "Natural hair wash and deep conditioning", "Twist outs and bantu knot styles", "Hair trimming and shape-ups", "Scalp treatments with natural oils"]
+                },
+                {
+                    icon: "👑", 
+                    title: "Braiding & Locs", 
+                    description: "Traditional and modern braiding techniques",
+                    samples: ["Intricate cornrow patterns and designs", "Box braids in various lengths and sizes", "Senegalese twists and rope braids", "Dreadlock maintenance and styling", "Goddess braids with accessories"]
+                },
+                {
+                    icon: "💄", 
+                    title: "Makeup & Beauty", 
+                    description: "Professional makeup for all occasions",
+                    samples: ["Bridal makeup with traditional elements", "Natural everyday makeup looks", "Special event glamour makeup", "Makeup lessons and tutorials", "Henna art and temporary tattoos"]
+                },
+                {
+                    icon: "✨", 
+                    title: "Spa & Wellness", 
+                    description: "Relaxation and rejuvenation services",
+                    samples: ["Full body massage with local oils", "Facial treatments using natural ingredients", "Manicure and pedicure services", "Aromatherapy and relaxation sessions", "Traditional healing and wellness treatments"]
+                },
+                {
+                    icon: "🌿", 
+                    title: "Natural Beauty Products", 
+                    description: "Locally sourced beauty and skincare items",
+                    samples: ["Shea butter products from local sources", "Black soap with traditional ingredients", "Natural hair oils and treatments", "Herbal skincare remedies", "Organic beauty product consultations"]
+                }
+            ],
+            "Technology": [
+                {
+                    icon: "💻", 
+                    title: "Laptop Repair Services", 
+                    description: "Professional computer diagnostics and repair",
+                    samples: ["Screen replacement for all laptop brands", "Keyboard and touchpad repairs", "Hard drive recovery and replacement", "Virus removal and system optimization", "Hardware upgrades and memory installation"]
+                },
+                {
+                    icon: "📱", 
+                    title: "Mobile Phone Repairs", 
+                    description: "Quick and reliable smartphone services",
+                    samples: ["Cracked screen replacement (iPhone, Samsung, etc.)", "Battery replacement and charging issues", "Water damage restoration services", "Software troubleshooting and updates", "Phone unlocking and network issues"]
+                },
+                {
+                    icon: "📷", 
+                    title: "CCTV & Security Systems", 
+                    description: "Complete security installation and maintenance",
+                    samples: ["4-camera security system installation", "Night vision cameras for 24/7 monitoring", "Remote viewing setup for smartphones", "Alarm system integration", "Business security consultations"]
+                },
+                {
+                    icon: "💾", 
+                    title: "Data Recovery Services", 
+                    description: "Retrieve lost or corrupted important files",
+                    samples: ["Hard drive data recovery", "Deleted file restoration", "Corrupted document repair", "Photo and video recovery", "Business data backup solutions"]
+                },
+                {
+                    icon: "🖥️", 
+                    title: "Computer Setup & Training", 
+                    description: "New system setup and user education",
+                    samples: ["New computer setup and software installation", "Microsoft Office training sessions", "Internet and email setup tutorials", "Basic computer skills for beginners", "Business software consultations"]
+                }
+            ],
+            "Food & Catering": [
+                {
+                    icon: "🍛", 
+                    title: "Traditional Sierra Leonean Cuisine", 
+                    description: "Authentic local dishes prepared with love",
+                    samples: ["Jollof rice with perfectly seasoned chicken", "Cassava leaves with smoked fish and meat", "Groundnut soup with fresh vegetables", "Fried plantains with spicy pepper sauce", "Palm oil rice with dried fish"]
+                },
+                {
+                    icon: "🎂", 
+                    title: "Wedding & Event Catering", 
+                    description: "Complete catering for special occasions",
+                    samples: ["3-tier wedding cake with traditional decorations", "Buffet setup for 200+ guests", "Cocktail reception with local and international dishes", "Traditional naming ceremony catering", "Corporate lunch packages"]
+                },
+                {
+                    icon: "🥘", 
+                    title: "Daily Meal Services", 
+                    description: "Fresh, healthy meals for everyday dining",
+                    samples: ["Weekly meal prep with balanced nutrition", "Office lunch delivery service", "Home-cooked meals for busy families", "Special diet accommodations", "Fresh fruit and vegetable arrangements"]
+                },
+                {
+                    icon: "🍖", 
+                    title: "Grilled & Barbecue Specialties", 
+                    description: "Expert grilling for meat lovers",
+                    samples: ["Perfectly grilled chicken with local spices", "BBQ beef with traditional marinades", "Grilled fish with pepper sauce", "Suya-style meat skewers", "Mixed grill platters for parties"]
+                },
+                {
+                    icon: "🥤", 
+                    title: "Beverages & Refreshments", 
+                    description: "Traditional and modern drink options",
+                    samples: ["Fresh ginger beer and natural juices", "Traditional palm wine service", "Imported and local soft drinks", "Coffee and tea service for events", "Custom cocktail and mocktail creation"]
+                }
+            ],
+            "Home & Garden": [
+                {
+                    icon: "🌺", 
+                    title: "Garden Design & Landscaping", 
+                    description: "Beautiful outdoor spaces for your property",
+                    samples: ["Tropical flower garden with native plants", "Vegetable garden setup with raised beds", "Decorative stone pathways and borders", "Outdoor lighting and water features", "Compound beautification projects"]
+                },
+                {
+                    icon: "🌳", 
+                    title: "Tree Planting & Maintenance", 
+                    description: "Professional tree care and landscaping",
+                    samples: ["Fruit tree planting (mango, orange, coconut)", "Shade tree installation for compounds", "Tree pruning and health maintenance", "Palm tree care and trimming", "Hedge trimming and topiary work"]
+                },
+                {
+                    icon: "💡", 
+                    title: "Electrical Services", 
+                    description: "Safe and reliable electrical installations",
+                    samples: ["House wiring and electrical panel installation", "Solar power system setup", "Ceiling fan and light fixture installation", "Outdoor security lighting", "Electrical troubleshooting and repairs"]
+                },
+                {
+                    icon: "🚿", 
+                    title: "Plumbing Services", 
+                    description: "Complete water system solutions",
+                    samples: ["Bathroom renovation and fixture installation", "Water tank and pump installation", "Pipe repair and replacement", "Drainage system maintenance", "Kitchen sink and appliance connections"]
+                },
+                {
+                    icon: "🏠", 
+                    title: "Home Improvement", 
+                    description: "Complete renovation and upgrade services",
+                    samples: ["Interior painting with quality finishes", "Tile installation for floors and walls", "Window and door installations", "Roof repair and maintenance", "Compound wall construction and gates"]
+                }
+            ]
+        };
+
+        let filteredServices = [...services];
+
+        // Initialize the page
+        function init() {
+            setGreeting();
+            displayServices(filteredServices);
+        }
+
+        // Set greeting based on time
+        function setGreeting() {
+            const now = new Date();
+            const hour = now.getHours();
+            let greeting;
+            
+            if (hour < 12) {
+                greeting = "Good Morning";
+            } else if (hour < 18) {
+                greeting = "Good Afternoon";
+            } else {
+                greeting = "Good Evening";
+            }
+            
+            const date = now.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            document.getElementById('greeting').textContent = `${greeting} | ${date}`;
+        }
+
+        // Display services
+        function displayServices(servicesToShow) {
+            const grid = document.getElementById('servicesGrid');
+            const noResults = document.getElementById('noResults');
+            const resultsCount = document.getElementById('resultsCount');
+            
+            resultsCount.textContent = `Found ${servicesToShow.length} service(s)`;
+            
+            if (servicesToShow.length === 0) {
+                grid.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            noResults.style.display = 'none';
+            
+            grid.innerHTML = servicesToShow.map(service => {
+                const stars = '⭐'.repeat(Math.floor(service.rating));
+                return `
+                    <div class="service-card" onclick="openModal(${services.indexOf(service)})">
+                        <div class="click-indicator">👁️</div>
+                        <div class="service-name">${service.name}</div>
+                        <div class="service-category">${service.category} - ${service.subcategory}</div>
+                        <div class="service-location">📍 ${service.area}, ${service.city}, ${service.district}</div>
+                        <div class="service-rating">${stars} ${service.rating}/5.0 | ${service.price_range}</div>
+                        <div class="service-description">${service.description}</div>
+                        <div class="service-services"><strong>Services:</strong> ${service.services.join(', ')}</div>
+                        <div class="service-gender"><strong>Gender Served:</strong> ${service.gender_served}</div>
+                        <div class="service-contact">
+                            <strong>Contact:</strong><br>
+                            📞 ${service.phone}<br>
+                            📧 ${service.email}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Filter services
+        function filterServices() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const district = document.getElementById('districtFilter').value;
+            const gender = document.getElementById('genderFilter').value;
+            const minRating = parseFloat(document.getElementById('ratingFilter').value);
+            
+            filteredServices = services.filter(service => {
+                const matchesSearch = !searchTerm || 
+                    service.name.toLowerCase().includes(searchTerm) ||
+                    service.description.toLowerCase().includes(searchTerm) ||
+                    service.category.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = !category || service.category === category;
+                const matchesDistrict = !district || service.district === district;
+                const matchesGender = !gender || service.gender_served === "All" || service.gender_served === gender;
+                const matchesRating = service.rating >= minRating;
+                
+                return matchesSearch && matchesCategory && matchesDistrict && matchesGender && matchesRating;
+            });
+            
+            displayServices(filteredServices);
+        }
+
+        // Search services
+        function searchServices() {
+            filterServices();
+        }
+
+        // Open modal
+        function openModal(serviceIndex) {
+            const service = services[serviceIndex];
+            const modal = document.getElementById('serviceModal');
+            const modalServiceName = document.getElementById('modalServiceName');
+            const modalServiceCategory = document.getElementById('modalServiceCategory');
+            const modalServiceDetails = document.getElementById('modalServiceDetails');
+            
+            modalServiceName.textContent = service.name;
+            modalServiceCategory.textContent = `${service.category} - ${service.subcategory}`;
+            
+            const products = productSamples[service.category] || [
+                {icon: "📦", title: "Service 1", description: "Professional service offering", samples: ["Sample work 1", "Sample work 2", "Sample work 3", "Sample work 4", "Sample work 5"]},
+                {icon: "📦", title: "Service 2", description: "Quality service provision", samples: ["Sample work 1", "Sample work 2", "Sample work 3", "Sample work 4", "Sample work 5"]},
+                {icon: "📦", title: "Service 3", description: "Expert service delivery", samples: ["Sample work 1", "Sample work 2", "Sample work 3", "Sample work 4", "Sample work 5"]},
+                {icon: "📦", title: "Service 4", description: "Premium service offering", samples: ["Sample work 1", "Sample work 2", "Sample work 3", "Sample work 4", "Sample work 5"]},
+                {icon: "📦", title: "Service 5", description: "Specialized service provision", samples: ["Sample work 1", "Sample work 2", "Sample work 3", "Sample work 4", "Sample work 5"]}
+            ];
+            
+            const stars = '⭐'.repeat(Math.floor(service.rating));
+            
+            modalServiceDetails.innerHTML = `
+                <h3 style="color: #0D47A1; margin-bottom: 15px;">📍 Location & Contact</h3>
+                <div style="background-color: #E3F2FD; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <p><strong>Address:</strong> ${service.area}, ${service.city}, ${service.district}</p>
+                    <p><strong>Phone:</strong> ${service.phone}</p>
+                    <p><strong>Email:</strong> ${service.email}</p>
+                    <p><strong>Rating:</strong> ${stars} ${service.rating}/5.0</p>
+                    <p><strong>Price Range:</strong> ${service.price_range}</p>
+                    <p><strong>Gender Served:</strong> ${service.gender_served}</p>
+                </div>
+                
+                <h3 style="color: #0D47A1; margin-bottom: 15px;">📝 About This Service</h3>
+                <div style="background-color: #90CAF9; color: #0D47A1; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <p>${service.description}</p>
+                </div>
+                
+                <h3 style="color: #0D47A1; margin-bottom: 15px;">🛍️ Services & Products</h3>
+                <div style="margin-bottom: 20px;">
+                    <p><strong>Available Services:</strong> ${service.services.join(', ')}</p>
+                </div>
+                
+                <h3 style="color: #0D47A1; margin-bottom: 15px;">📸 Our Work Portfolio & Sample Services</h3>
+                <div class="product-gallery">
+                    ${products.map((product, index) => `
+                        <div class="product-image" onclick="showWorkSamples('${service.name}', '${product.title}', ${JSON.stringify(product.samples).replace(/"/g, '&quot;')})">
+                            <div class="product-icon">${product.icon}</div>
+                            <div class="product-title">${product.title}</div>
+                            <div class="product-description">${product.description}</div>
+                            <div style="position: absolute; bottom: 10px; right: 10px; background: rgba(30, 136, 229, 0.8); color: white; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; font-size: 0.8em;">👁️</div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <button onclick="closeModal()" 
+                            style="background-color: #1E88E5; color: white; padding: 8px 16px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
+                        Close
+                    </button>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        // Show work samples
+        function showWorkSamples(serviceName, productTitle, samples) {
+            const samplesArray = JSON.parse(samples.replace(/&quot;/g, '"'));
+            const modal = document.getElementById('serviceModal');
+            const modalServiceName = document.getElementById('modalServiceName');
+            const modalServiceCategory = document.getElementById('modalServiceCategory');
+            const modalServiceDetails = document.getElementById('modalServiceDetails');
+            
+            modalServiceName.textContent = serviceName;
+            modalServiceCategory.textContent = `${productTitle} - Work Samples`;
+            
+            modalServiceDetails.innerHTML = `
+                <h3 style="color: #0D47A1; margin-bottom: 20px;">📸 ${productTitle} - Our Previous Work</h3>
+                <div style="background-color: #E3F2FD; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <p style="font-style: italic; color: #0D47A1; margin-bottom: 15px;">Here are 5 examples of our recent work in ${productTitle.toLowerCase()}:</p>
+                    <div style="display: grid; gap: 15px;">
+                        ${samplesArray.map((sample, index) => `
+                            <div style="background: white; padding: 15px; border-radius: 8px; border-left: 4px solid #1E88E5; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                    <div style="background: #1E88E5; color: white; border-radius: 50%; width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; font-size: 0.9em; font-weight: bold; margin-right: 10px;">
+                                        ${index + 1}
+                                    </div>
+                                    <strong style="color: #0D47A1;">Sample Work ${index + 1}</strong>
+                                </div>
+                                <p style="color: #0D47A1; margin: 0; line-height: 1.4;">${sample}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div style="background-color: #90CAF9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <h4 style="color: #0D47A1; margin-bottom: 10px;">📞 Contact us for similar work:</h4>
+                    <p style="color: #0D47A1; margin: 0;">Call or message us to discuss your ${productTitle.toLowerCase()} needs. We provide free consultations and quotes for all projects.</p>
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <button onclick="closeModal()" 
+                            style="background-color: #1E88E5; color: white; padding: 12px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-right: 10px;">
+                        Close
+                    </button>
+                    <button onclick="history.back()" 
+                            style="background-color: #64B5F6; color: white; padding: 12px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                        ← Back to Services
+                    </button>
+                </div>
+            `;
+            
+            // Scroll to top of modal
+            document.querySelector('.modal-content').scrollTop = 0;
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('serviceModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('serviceModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Add event listener for search input
+        document.getElementById('searchInput').addEventListener('input', filterServices);
+
+        // Initialize the page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

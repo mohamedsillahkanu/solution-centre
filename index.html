@@ -38,6 +38,12 @@
             margin: 0 auto;
         }
 
+        .header-logo {
+            width: 120px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
         .site-title {
             font-size: 28px;
             font-weight: 700;
@@ -363,6 +369,47 @@
             border-top: 2px solid #004080;
         }
 
+        .service-gallery {
+            padding: 15px 20px;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .service-gallery-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #004080;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .service-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .service-gallery-item {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .service-gallery-item:hover {
+            transform: scale(1.05);
+            border-color: #004080;
+        }
+
+        .service-gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
         .contact-btn {
             width: 100%;
             padding: 12px 20px;
@@ -533,6 +580,115 @@
         }
 
         /* ============================================ */
+        /* LIGHTBOX */
+        /* ============================================ */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .lightbox-overlay.show {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: 90vw;
+            max-height: 90vh;
+            position: relative;
+        }
+
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+            border: 4px solid #ffffff;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: #004080;
+            border: none;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: 'Oswald', Arial, sans-serif;
+        }
+
+        .lightbox-close:hover {
+            background: #0056b3;
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #004080;
+            border: none;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 15px 20px;
+            border-radius: 4px;
+            font-family: 'Oswald', Arial, sans-serif;
+        }
+
+        .lightbox-nav:hover {
+            background: #0056b3;
+        }
+
+        .lightbox-prev {
+            left: -70px;
+        }
+
+        .lightbox-next {
+            right: -70px;
+        }
+
+        .lightbox-counter {
+            text-align: center;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 15px;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .lightbox-nav {
+                padding: 10px 15px;
+                font-size: 18px;
+            }
+
+            .lightbox-prev {
+                left: 10px;
+            }
+
+            .lightbox-next {
+                right: 10px;
+            }
+
+            .service-gallery-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+            }
+        }
+
+        /* ============================================ */
         /* FOOTER */
         /* ============================================ */
         .page-footer {
@@ -598,6 +754,10 @@
                 font-size: 22px;
             }
 
+            .header-logo {
+                width: 100px;
+            }
+
             .stats-container {
                 gap: 20px;
             }
@@ -614,6 +774,11 @@
                 grid-template-columns: 1fr;
             }
 
+            .service-gallery-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+            }
+
             .footer-contact {
                 flex-direction: column;
                 gap: 10px;
@@ -625,6 +790,7 @@
     <!-- HEADER -->
     <header class="page-header">
         <div class="header-container">
+            <img src="https://github.com/mohamedsillahkanu/gdp-dashboard-2/raw/6c7463b0d5c3be150aafae695a4bcbbd8aeb1499/ICF-SL.jpg" alt="ICF-SL Logo" class="header-logo">
             <h1 class="site-title">SOLUTION CENTER SIERRA LEONE</h1>
             <p class="site-tagline">Find Any Service, Anywhere, Anytime</p>
         </div>
@@ -755,6 +921,17 @@
         </div>
     </div>
 
+    <!-- LIGHTBOX -->
+    <div class="lightbox-overlay" id="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" onclick="closeLightbox()">CLOSE</button>
+            <button class="lightbox-nav lightbox-prev" onclick="prevImage()">&lt;</button>
+            <img src="" alt="Gallery Image" class="lightbox-image" id="lightboxImage">
+            <button class="lightbox-nav lightbox-next" onclick="nextImage()">&gt;</button>
+            <div class="lightbox-counter" id="lightboxCounter">1 / 8</div>
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <footer class="page-footer">
         <div class="footer-container">
@@ -785,7 +962,17 @@
                 email: "aminata.fashion@gmail.com",
                 genderServed: "All",
                 rating: 4.8,
-                priceRange: "Le 200,000 - Le 2,000,000"
+                priceRange: "Le 200,000 - Le 2,000,000",
+                gallery: [
+                    "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1590735213920-68192a487bc2?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1612722432474-b971cdcea546?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1558171813-4c088753af8f?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=300&h=250&fit=crop"
+                ]
             },
             {
                 id: 2,
@@ -798,7 +985,17 @@
                 email: "bocitytransport@yahoo.com",
                 genderServed: "All",
                 rating: 4.5,
-                priceRange: "Le 50,000 - Le 500,000"
+                priceRange: "Le 50,000 - Le 500,000",
+                gallery: [
+                    "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1553413077-190dd305871c?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=300&h=250&fit=crop"
+                ]
             },
             {
                 id: 3,
@@ -811,7 +1008,17 @@
                 email: "freetownbeauty@gmail.com",
                 genderServed: "Women",
                 rating: 4.7,
-                priceRange: "Le 30,000 - Le 300,000"
+                priceRange: "Le 30,000 - Le 300,000",
+                gallery: [
+                    "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1487412947147-5cebf96e7225?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?w=300&h=250&fit=crop"
+                ]
             },
             {
                 id: 4,
@@ -824,7 +1031,17 @@
                 email: "techfix.sl@gmail.com",
                 genderServed: "All",
                 rating: 4.6,
-                priceRange: "Le 50,000 - Le 1,000,000"
+                priceRange: "Le 50,000 - Le 1,000,000",
+                gallery: [
+                    "https://images.unsplash.com/photo-1518770660439-4636190af475?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1588508065123-287b28e013da?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1591799265444-d66432b91588?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1563206767-5b18f218e8de?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=300&h=250&fit=crop"
+                ]
             },
             {
                 id: 5,
@@ -837,7 +1054,17 @@
                 email: "mamasalone.catering@gmail.com",
                 genderServed: "All",
                 rating: 4.9,
-                priceRange: "Le 100,000 - Le 5,000,000"
+                priceRange: "Le 100,000 - Le 5,000,000",
+                gallery: [
+                    "https://images.unsplash.com/photo-1555244162-803834f70033?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1432139509613-5c4255815697?w=300&h=250&fit=crop"
+                ]
             },
             {
                 id: 6,
@@ -850,7 +1077,17 @@
                 email: "kenemagarden@yahoo.com",
                 genderServed: "All",
                 rating: 4.3,
-                priceRange: "Le 75,000 - Le 750,000"
+                priceRange: "Le 75,000 - Le 750,000",
+                gallery: [
+                    "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1558904541-efa843a96f01?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1598902108854-10e335adac99?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1591857177580-dc82b9ac4e1e?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1599629954294-14df9ec8dfe8?w=300&h=250&fit=crop",
+                    "https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=300&h=250&fit=crop"
+                ]
             }
         ];
 
@@ -858,6 +1095,8 @@
         // STATE
         // ============================================
         let filteredServices = [...services];
+        let currentLightboxService = null;
+        let currentLightboxIndex = 0;
 
         // ============================================
         // INITIALIZATION
@@ -879,6 +1118,12 @@
             document.getElementById('contactModal').addEventListener('click', function(e) {
                 if (e.target === this) {
                     closeModal();
+                }
+            });
+
+            document.getElementById('lightbox').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeLightbox();
                 }
             });
         }
@@ -969,6 +1214,16 @@
                             <span class="rating-stars">${getStars(service.rating)}</span>
                         </div>
                     </div>
+                    <div class="service-gallery">
+                        <div class="service-gallery-title">Product Samples</div>
+                        <div class="service-gallery-grid">
+                            ${service.gallery.map((img, idx) => `
+                                <div class="service-gallery-item" onclick="openLightbox(${service.id}, ${idx})">
+                                    <img src="${img}" alt="${service.name} Sample ${idx + 1}">
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
                     <div class="service-footer">
                         <button class="contact-btn" onclick="showContact(${service.id})">VIEW CONTACT DETAILS</button>
                     </div>
@@ -1034,6 +1289,59 @@
         function closeModal() {
             document.getElementById('contactModal').classList.remove('show');
         }
+
+        // ============================================
+        // LIGHTBOX
+        // ============================================
+        function openLightbox(serviceId, imageIndex) {
+            const service = services.find(s => s.id === serviceId);
+            if (!service) return;
+
+            currentLightboxService = service;
+            currentLightboxIndex = imageIndex;
+            updateLightboxImage();
+            document.getElementById('lightbox').classList.add('show');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('show');
+            currentLightboxService = null;
+            currentLightboxIndex = 0;
+        }
+
+        function updateLightboxImage() {
+            if (!currentLightboxService) return;
+
+            const img = document.getElementById('lightboxImage');
+            const counter = document.getElementById('lightboxCounter');
+            
+            // Use higher resolution for lightbox
+            const imageUrl = currentLightboxService.gallery[currentLightboxIndex].replace('w=300&h=250', 'w=800&h=600');
+            img.src = imageUrl;
+            img.alt = `${currentLightboxService.name} - Image ${currentLightboxIndex + 1}`;
+            counter.textContent = `${currentLightboxIndex + 1} / ${currentLightboxService.gallery.length}`;
+        }
+
+        function nextImage() {
+            if (!currentLightboxService) return;
+            currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxService.gallery.length;
+            updateLightboxImage();
+        }
+
+        function prevImage() {
+            if (!currentLightboxService) return;
+            currentLightboxIndex = (currentLightboxIndex - 1 + currentLightboxService.gallery.length) % currentLightboxService.gallery.length;
+            updateLightboxImage();
+        }
+
+        // Keyboard navigation for lightbox
+        document.addEventListener('keydown', function(e) {
+            if (!document.getElementById('lightbox').classList.contains('show')) return;
+            
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') nextImage();
+            if (e.key === 'ArrowLeft') prevImage();
+        });
 
         // ============================================
         // STATS
